@@ -1,21 +1,19 @@
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Objects;
 public class Task {
-    private final int idNumber;
-    private final String name;
-    private final String description;
-    private final Status status;
+    private int id;
+    private String name;
+    private String description;
+    private Status status;
 
-
-    public Task(int idNumber, String name, String description, Status status) {
-        this.idNumber = idNumber;
+    public Task(int id, String name, String description, Status status) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.status = status;
     }
 
-    public int getIdNumber() {
-        return idNumber;
+    public int getId() {
+        return id;
     }
 
     public String getName() {
@@ -27,7 +25,32 @@ public class Task {
     }
 
     public Status getStatus() {
-
         return status;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Task task = (Task) object;
+        return id == task.id &&
+                Objects.equals(name, task.name) &&
+                Objects.equals(description, task.description) &&
+                status == task.status;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, description, status);
+    }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", status=" + status +
+                '}';
     }
 }
