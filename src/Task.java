@@ -1,32 +1,21 @@
 import java.util.Objects;
 public class Task {
-    private int id;
+    private Integer id;
     private String name;
     private String description;
     private Status status;
 
-    public Task(int id, String name, String description, Status status) {
+    public Task(Integer id, String name, String description, Status status) {
         this.id = id;
-        this.name = this.name;
-        this.description = this.description;
-        this.status = this.status;
-    }
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
         this.name = name;
-    }
-
-    public void setDescription(String description) {
         this.description = description;
-    }
-
-    public void setStatus(Status status) {
         this.status = status;
     }
-    public int getId() {
+
+    public Task() {
+    }
+
+    public Integer getId() {
         return id;
     }
 
@@ -40,6 +29,22 @@ public class Task {
 
     public Status getStatus() {
         return status;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     @Override

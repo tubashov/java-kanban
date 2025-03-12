@@ -4,6 +4,10 @@ public class SubTask extends Task{
 
     private int epicId;
 
+    public SubTask(int id, String name, String description, Status status) {
+        super(id, name, description, status);
+    }
+
     public SubTask(int id, String name, String description, Status status, int epicId) {
         super(id, name, description, status);
         this.epicId = epicId;
@@ -11,6 +15,7 @@ public class SubTask extends Task{
 
     public void setEpicId(int epicId) {
         this.epicId = epicId;
+        return;
     }
 
     public int getEpicId() {
