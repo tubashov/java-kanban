@@ -1,6 +1,6 @@
 import java.util.Objects;
 
-public class SubTask extends Task{
+public class SubTask extends Task {
 
     private int epicId;
 
@@ -15,7 +15,6 @@ public class SubTask extends Task{
 
     public void setEpicId(int epicId) {
         this.epicId = epicId;
-        return;
     }
 
     public int getEpicId() {
@@ -38,8 +37,10 @@ public class SubTask extends Task{
 
     @Override
     public String toString() {
-        return "SubTask{" +
-                "epicId=" + epicId +
-                '}';
+        return "SubTask{id=" + getId() +
+        ", name='" + getName() + '\'' +
+        ", description='" + getDescription() + '\'' +
+        ", status=" + getStatus() + ", " +
+        "epicId=" + getEpicId() + "}";
     }
 }

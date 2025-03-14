@@ -3,7 +3,7 @@ import java.util.Objects;
 
 public class Epic extends Task {
 
-    private ArrayList<Integer> idSubTasks;
+    private ArrayList<Integer> idSubTasks = new ArrayList<>();
 
     public Epic(Integer id, String name, String description, Status status) {
         super(id, name, description, status);
@@ -14,14 +14,12 @@ public class Epic extends Task {
         this.idSubTasks = idSubTasks;
     }
 
-
     public Epic(ArrayList<Integer> idSubTasks) {
         this.idSubTasks = idSubTasks;
     }
 
     public void setIdSubTask(int idSubTask) {
         this.idSubTasks.add(idSubTask);
-        //this.idSubTask = idSubTask;
     }
 
     public ArrayList<Integer> getIdSubTask() {
@@ -44,8 +42,10 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        return "Epic{" +
-                "idSubTask=" + idSubTasks +
-                '}';
+        return "Epic{id=" + getId() +
+                ", name='" + getName() + '\'' +
+                ", description='" + getDescription() + '\'' +
+                ", status=" + getStatus() + ", " +
+                "idSubTask=" + getIdSubTask() + "}";
     }
 }
