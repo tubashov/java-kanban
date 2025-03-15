@@ -32,18 +32,14 @@ public class TaskManager {
         return subTask;
     }
     // обновление задачи
-    public void updateTask(int id, Task task) {
-        Task newTask = new Task(id, task.getName(), task.getDescription(), task.getStatus());
-        this.tasks.put(task.getId(), newTask);
+    public void updateTask(Task task) {
+        tasks.put(task.getId(), task);
     }
-    public void updateEpic(int id, Epic epic) {
-        Epic newEpic = new Epic(id, epic.getName(), epic.getDescription(), getEpicStatus(epic.getId()),
-                epic.getIdSubTask());
-        this.tasks.put(epic.getId(), newEpic);
+
+    public void updateEpic(Epic epic) {
+        tasks.put(epic.getId(), epic);
     }
-    public void updateTask(int id, SubTask subTask) {
-        SubTask newSubTask = new SubTask(id, subTask.getName(), subTask.getDescription(), subTask.getStatus(),
-                subTask.getEpicId());
+    public void updateSubTask(SubTask subTask) {
         this.subTasks.put(subTask.getId(), subTask);
     }
     // получение всех задач
@@ -99,7 +95,7 @@ public class TaskManager {
     // удаление всех задач
     public void crearTasks() {
         tasks.clear();
-        }
+    }
     public void crearEpics() {
         epics.clear();
     }
@@ -122,7 +118,7 @@ public class TaskManager {
         subTasks.remove(id);
     }
     // изменение статуса эпика
-    private Status getEpicStatus(int epicId){
+    public Status getEpicStatus(int epicId){
         int newCount = 0;
         int doneCount = 0;
         Epic epic = this.epics.get(epicId); // создаем объект класса epic с epicId, поступившего в параметре метода

@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Epic extends Task {
@@ -20,6 +21,11 @@ public class Epic extends Task {
 
     public void setIdSubTask(int idSubTask) {
         this.idSubTasks.add(idSubTask);
+    }
+
+    @Override
+    public void setStatus(Status status) {
+        super.setStatus(status);
     }
 
     public ArrayList<Integer> getIdSubTask() {
