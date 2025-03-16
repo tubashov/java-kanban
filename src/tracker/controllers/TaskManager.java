@@ -1,3 +1,11 @@
+package tracker.controllers;
+
+import tracker.model.Epic;
+import tracker.model.SubTask;
+import tracker.model.Task;
+import tracker.util.Status;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -7,6 +15,7 @@ public class TaskManager {
     private HashMap<Integer, Task> tasks = new HashMap<>();
     private HashMap<Integer, Epic> epics = new HashMap<>();
     private HashMap<Integer, SubTask> subTasks = new HashMap<>();
+
 
     public int generateId() {
         count++;
@@ -41,28 +50,26 @@ public class TaskManager {
     }
     public void updateSubTask(SubTask subTask) {
         this.subTasks.put(subTask.getId(), subTask);
+        Integer id = subTask.getEpicId();
+        Status status = updateEpicStatus(id);
+        Epic epic = epics.get(id);
+        epic.setStatus(status);
     }
-    // получение всех задач
-    public void getTasks() {
-        for (Task task : tasks.values()) {
-            System.out.println(task.toString());
-        }
+    public ArrayList<Task> getTasks() {
+        return new ArrayList<>(tasks.values());
     }
-    public void getEpics() {
-        for (Epic epic : epics.values()) {
-            System.out.println(epic.toString());
-        }
+    public ArrayList<SubTask> getSubTasks() {
+        return new ArrayList<>(subTasks.values());
     }
-    public void getSubTasks() {
-        for (SubTask subTask : subTasks.values()) {
-            System.out.println(subTask.toString());
-        }
+    public ArrayList<Epic> getEpics() {
+        return new ArrayList<>(epics.values());
     }
+
     // получение по идентификатору
     public Task getTask(int idTask) {
         for (Task task : tasks.values()) {
             if (task.getId() == idTask) {
-                System.out.printf(task.toString());
+               return task;
             }
         }
         return  null;
@@ -70,7 +77,7 @@ public class TaskManager {
     public Epic getEpic(int idEpic) {
         for (Epic epic : epics.values()) {
             if (epic.getId() == idEpic) {
-                System.out.println(epic.toString());
+                return epic;
             }
         }
         return null;
@@ -78,28 +85,36 @@ public class TaskManager {
     public SubTask getSubTask(int idSubTask) {
         for (SubTask subTask : subTasks.values()) {
             if (subTask.getId() == idSubTask) {
-                System.out.println(subTask.toString());
+                return subTask;
             }
         }
         return null;
     }
     // список подзадач определенного эпика
-    public void getSubTaskList(int epicId) {
+    public ArrayList<SubTask> getSubTaskList(int epicId) {
+        ArrayList<SubTask> listSubTasks = new ArrayList<>();
         Epic epic = this.epics.get(epicId);
         List<Integer> subTaskIds = epic.getIdSubTask();
         for (Integer subTaskId : subTaskIds) {
             SubTask subTask =  subTasks.get(subTaskId);
-            System.out.println(subTask.toString());
+            listSubTasks.add(subTask);
         }
+        return listSubTasks;
     }
     // удаление всех задач
-    public void crearTasks() {
+    public void deleteTasks() {
         tasks.clear();
     }
-    public void crearEpics() {
+    public void deleteEpics() {
         epics.clear();
+        subTasks.clear();
     }
-    public void crearSubTasks() {
+
+    public void deleteSubTasks() {
+        for (Epic epic : epics.values()) {
+            epic.cleanSubtaskIds();
+            updateEpicStatus(epic.getId());
+        }
         subTasks.clear();
     }
     // удаление по идентификатору
@@ -115,10 +130,16 @@ public class TaskManager {
         epics.remove(epicId);
     }
     public void removeSubTask(int id) {
+        Integer epicId = subTasks.get(id).getEpicId();
         subTasks.remove(id);
+
+        epic.cleanSubtaskIds();
+        updateEpicStatus(epicId);
+
     }
+
     // изменение статуса эпика
-    public Status getEpicStatus(int epicId){
+    public Status updateEpicStatus(int epicId){
         int newCount = 0;
         int doneCount = 0;
         Epic epic = this.epics.get(epicId); // создаем объект класса epic с epicId, поступившего в параметре метода

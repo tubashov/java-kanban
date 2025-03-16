@@ -1,14 +1,12 @@
+package tracker.model;
+
 import java.util.Objects;
+import tracker.util.Status;
 public class Task {
     private Integer id;
     private String name;
     private String description;
     private Status status;
-
-    public Task(String name, String description) {
-        this.name = name;
-        this.description = description;
-    }
 
     public Task(String name, String description, Status status) {
         this.name = name;
@@ -82,7 +80,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Task{" +
+        return "tracker.controllers.model.Task{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +

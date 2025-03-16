@@ -1,16 +1,22 @@
+package tracker.model;
+
+import tracker.util.Status;
+
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class Epic extends Task {
 
     private ArrayList<Integer> idSubTasks = new ArrayList<>();
 
+    public Epic() {
+    }
+
     public Epic(Integer id, String name, String description, Status status) {
         super(id, name, description, status);
     }
 
-    public Epic(int id, String name, String description, Status status, ArrayList<Integer> idSubTasks) {
+    public Epic(Integer id, String name, String description, Status status, ArrayList<Integer> idSubTasks) {
         super(id, name, description, status);
         this.idSubTasks = idSubTasks;
     }
@@ -23,6 +29,9 @@ public class Epic extends Task {
         this.idSubTasks.add(idSubTask);
     }
 
+    public void cleanSubtaskIds() {
+        idSubTasks.clear();
+    }
     @Override
     public void setStatus(Status status) {
         super.setStatus(status);
@@ -48,7 +57,7 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        return "Epic{id=" + getId() +
+        return "tracker.controllers.model.Epic{id=" + getId() +
                 ", name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +
                 ", status=" + getStatus() + ", " +
