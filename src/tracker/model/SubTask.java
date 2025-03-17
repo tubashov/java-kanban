@@ -23,7 +23,6 @@ public class SubTask extends Task {
         this.epicId = epicId;
     }
 
-
     public void setEpicId(int epicId) {
         this.epicId = epicId;
     }
@@ -49,9 +48,9 @@ public class SubTask extends Task {
     @Override
     public String toString() {
         return "tracker.controllers.model.SubTask{id=" + getId() +
-        ", name='" + getName() + '\'' +
-        ", description='" + getDescription() + '\'' +
-        ", status=" + getStatus() + ", " +
-        "epicId=" + getEpicId() + "}";
+                ", name='" + getName() + '\'' +
+                ", description='" + getDescription() + '\'' +
+                ", status=" + getStatus() + ", " +
+                "epicId=" + getEpicId() + "}";
     }
 }
