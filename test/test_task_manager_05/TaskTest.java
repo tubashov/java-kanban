@@ -14,7 +14,6 @@ class TaskTest {
         InMemoryTaskManager inMemoryTaskManager = new InMemoryTaskManager();
         Task task = new Task("Test addNewTask", "Test addNewTask description", NEW);
         task.setId(1);
-
         inMemoryTaskManager.addTask(task);
 
         final int taskId = task.getId();
