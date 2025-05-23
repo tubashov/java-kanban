@@ -1,8 +1,8 @@
-package test_task_manager_05;
+package model;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import taskmanager.controllers.InMemoryTaskManager;
+import taskmanager.controller.InMemoryTaskManager;
 import taskmanager.model.Epic;
 import taskmanager.model.SubTask;
 

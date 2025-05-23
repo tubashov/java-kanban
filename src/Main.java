@@ -1,4 +1,4 @@
-import taskmanager.controllers.*;
+import taskmanager.controller.*;
 import taskmanager.model.Task;
 
 public class Main {

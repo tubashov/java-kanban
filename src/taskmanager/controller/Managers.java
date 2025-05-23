@@ -1,4 +1,4 @@
-package taskmanager.controllers;
+package taskmanager.controller;
 
 public class Managers {
 
@@ -8,7 +8,7 @@ public class Managers {
         return new InMemoryTaskManager();
     }
 
-    public HistoryManager getDefaultHistory() {
+    public static HistoryManager getDefaultHistory() {
         return new InMemoryHistoryManager();
     }
 }
