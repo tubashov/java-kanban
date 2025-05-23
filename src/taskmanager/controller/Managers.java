@@ -1,4 +1,4 @@
-package taskmanager.controllers;
+package taskmanager.controller;
 
 public class Managers {
 

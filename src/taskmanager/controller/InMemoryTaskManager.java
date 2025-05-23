@@ -1,4 +1,4 @@
-package taskmanager.controllers;
+package taskmanager.controller;
 
 import taskmanager.model.Epic;
 import taskmanager.model.SubTask;
@@ -156,7 +156,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
 
     public void deleteTasks() {
-        for(Integer taskId : tasks.keySet()) {
+        for (Integer taskId : tasks.keySet()) {
             historyManager.remove(taskId);
         }
         tasks.clear();
@@ -165,7 +165,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
 
     public void deleteEpics() {
-        for(Integer taskId : epics.keySet()) {
+        for (Integer taskId : epics.keySet()) {
             historyManager.remove(taskId);
         }
         epics.clear();
@@ -179,7 +179,7 @@ public class InMemoryTaskManager implements TaskManager {
             epic.cleanSubtaskIds();
             updateEpicStatus(epic.getId());
         }
-        for(Integer taskId : subTasks.keySet()) {
+        for (Integer taskId : subTasks.keySet()) {
             historyManager.remove(taskId);
         }
         subTasks.clear();

@@ -1,10 +1,8 @@
-package test_task_manager_05;
+package model;
 
 import org.junit.jupiter.api.Test;
-import taskmanager.controllers.HistoryManager;
-import taskmanager.controllers.InMemoryHistoryManager;
-import taskmanager.controllers.InMemoryTaskManager;
-import taskmanager.controllers.Managers;
+import taskmanager.controller.HistoryManager;
+import taskmanager.controller.Managers;
 import taskmanager.model.Task;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

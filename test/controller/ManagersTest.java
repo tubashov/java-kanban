@@ -1,7 +1,7 @@
-package test_task_manager_05;
+package controller;
 
 import org.junit.jupiter.api.Test;
-import taskmanager.controllers.*;
+import taskmanager.controller.*;
 import taskmanager.model.Task;
 
 import java.util.List;

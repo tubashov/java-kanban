@@ -1,4 +1,4 @@
-package taskmanager.controllers;
+package taskmanager.controller;
 
 import taskmanager.model.Task;
 import taskmanager.model.Epic;
