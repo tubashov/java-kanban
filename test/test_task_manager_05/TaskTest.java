@@ -1,24 +1,34 @@
 package test_task_manager_05;
 
 import org.junit.jupiter.api.Test;
+import taskmanager.controllers.HistoryManager;
+import taskmanager.controllers.InMemoryHistoryManager;
 import taskmanager.controllers.InMemoryTaskManager;
+import taskmanager.controllers.Managers;
 import taskmanager.model.Task;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static taskmanager.util.Status.NEW;
 
 class TaskTest {
+    private final HistoryManager historyManager = Managers.getDefaultHistory();
 
     @Test
     public void testTaskEqualsTask() {
-        InMemoryTaskManager inMemoryTaskManager = new InMemoryTaskManager();
+
         Task task = new Task("Test addNewTask", "Test addNewTask description", NEW);
         task.setId(1);
-        inMemoryTaskManager.addTask(task);
+        //inMemoryTaskManager.addTask(task);
+        historyManager.add(task);
 
-        final int taskId = task.getId();
+        Task savedTask = null;
 
-        final Task savedTask = inMemoryTaskManager.getTask(taskId);
+        for(Task t : historyManager.getHistory()) {
+            if (t.getId() == task.getId()) {
+                savedTask = t;
+                break;
+            }
+        }
 
         assertEquals(task, savedTask, "Задачи не совпадают.");
     }
