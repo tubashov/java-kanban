@@ -3,88 +3,113 @@ package taskmanager.controller;
 import taskmanager.model.Epic;
 import taskmanager.model.SubTask;
 import taskmanager.model.Task;
-import taskmanager.util.Status;
+import taskmanager.util.*;
 
 import java.io.*;
+
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.Formatter;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private final File file;
+    private final Charset charset;
 
-    public FileBackedTaskManager(File file) {
+    public FileBackedTaskManager(File file, Charset charset) {
         this.file = file;
+        this.charset = charset;
     }
 
+    // сохранение задач в файл
     private void save() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
-            writer.write("id,type,name,status,description\n");
-            //for (Task task : getAllTasks()) {
-                writer.write("\n");
-            //}
+        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)
+                , StandardCharsets.UTF_8))) {
+            writer.write("id,type,name,status,description,id epic\n");
+
+            for (Task task : getTasks()) {
+                writer.write(taskToString(task));
+                writer.newLine();
+            }
+
+            for (Epic epic : getEpics()) {
+                writer.write(taskToString(epic));
+                writer.newLine();
+            }
+
+            for (SubTask subTask : getSubTasks()) {
+                writer.write(taskToString(subTask));
+                writer.newLine();
+            }
+
         } catch (IOException e) {
-            System.out.println("Ошибка при сохранении задач в файл: " + e.getMessage());
+            throw new ManagerSaveException("Ошибка при сохранении задач в файл", e);
         }
     }
-    public static FileBackedTaskManager loadFromFile(File file) {
-        FileBackedTaskManager manager = new FileBackedTaskManager(file);
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
-            String line = reader.readLine(); // skip header
+    // сохранения задачи в строку
+    public static String taskToString(Task task) {
+        String type;
+        String epicId = "";
 
-            while ((line = reader.readLine()) != null) {
-                Task task = Task.fromCsv(line);
-                manager.addTaskDirectly(task);
-            }
-        } catch (IOException e) {
-            System.out.println("Ошибка при загрузке задач из файла: " + e.getMessage());
+        if (task instanceof Epic) {
+            type = "EPIC";
+        } else if (task instanceof SubTask) {
+            type = "SUBTASK";
+            epicId = String.valueOf(((SubTask) task).getEpicId());
+        } else {
+            type = "TASK";
         }
+        return task.getId() + "," +
+                type + "," +
+                task.getName() + "," +
+                task.getStatus() + "," +
+                task.getDescription() + "," +
+                epicId;
+    }
 
+    // метод создания задачи из строки
+    public static Task fromString(String value) {
+        String[] fields = value.split(",");
+        int id = Integer.parseInt(fields[0]);
+        TaskType type = TaskType.valueOf(fields[1]);
+        String name = fields[2];
+        Status status = Status.valueOf(fields[3]);
+        String description = fields[4];
+
+        switch (type) {
+            case TASK:
+                return new Task(id, name, description, status);
+            case EPIC:
+                return new Epic(id, name, description, status);
+            case SUBTASK:
+                int epicId = Integer.parseInt(fields[5]);
+                return new SubTask(id, name, description, status, epicId);
+            default:
+                throw new IllegalArgumentException("Неизвестный тип задачи: " + type);
+        }
+    }
+
+    // загрузка данных из файла
+    public static  FileBackedTaskManager loadFromFile (File file) {
+        FileBackedTaskManager manager = new FileBackedTaskManager(file, StandardCharsets.UTF_8);
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))) {
+            String line = reader.readLine();
+
+            while ((line = reader.readLine()) != null && !line.isEmpty()) {
+                Task task = fromString(line);
+                if (task instanceof Epic) {
+                    manager.addTask((Epic) task);
+                } else if (task instanceof SubTask) {
+                    manager.addTask((SubTask) task);
+                } else {
+                    manager.addTask(task);
+                }
+            }
+        } catch(IOException e){
+            throw new ManagerSaveException("Ошибка загрузки из файла", e);
+        }
         return manager;
     }
-
-    // Переопределяем методы родителя, добавляя save()
-
-//    @Override
-//    public ArrayList<Task> getTasks() {
-//        return super.getTasks();
-//        save();
-//    }
-//
-//    @Override
-//    public ArrayList<SubTask> getSubTasks() {
-//        return super.getSubTasks();
-//        save();
-//    }
-//
-//    @Override
-//    public ArrayList<Epic> getEpics() {
-//        return super.getEpics();
-//        save();
-//    }
-//
-//    @Override
-//    public Task getTask(int idTask) {
-//        return super.getTask(idTask);
-//        save();
-//    }
-//
-//    @Override
-//    public Epic getEpic(int idEpic) {
-//        return super.getEpic(idEpic);
-//        save();
-//    }
-//
-//    @Override
-//    public SubTask getSubTask(int idSubTask) {
-//        return super.getSubTask(idSubTask);
-//        save();
-//    }
-//
-//    @Override
-//    public ArrayList<SubTask> getSubTaskList(int epicId) {
-//        return super.getSubTaskList(epicId);
-//        save();
-//    }
 
     @Override
     public void updateTask(Task task) {
@@ -145,10 +170,4 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         super.removeSubTask(id);
         save();
     }
-
-//    @Override
-//    public Status updateEpicStatus(int epicId) {
-//        return super.updateEpicStatus(epicId);
-//        save();
-//    }
 }
