@@ -21,8 +21,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     // сохранение задач в файл
     private void save() {
-        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)
-                , StandardCharsets.UTF_8))) {
+        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file),
+                StandardCharsets.UTF_8))) {
             writer.write("id,type,name,status,description,id epic\n");
 
             for (Task task : getTasks()) {
@@ -88,7 +88,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     // загрузка данных из файла
-    public static  FileBackedTaskManager loadFromFile (File file) {
+    public static  FileBackedTaskManager loadFromFile(File file) {
         FileBackedTaskManager manager = new FileBackedTaskManager(file, StandardCharsets.UTF_8);
 
         Map<Integer, Task> tasks = new LinkedHashMap<>();
@@ -106,7 +106,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     manager.addTask(task);
                 }
             }
-        } catch(IOException e){
+        } catch (IOException e) {
             throw new ManagerSaveException("Ошибка загрузки из файла", e);
         }
         return manager;
