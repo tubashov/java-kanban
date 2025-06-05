@@ -141,11 +141,9 @@ public class InMemoryTaskManager implements TaskManager {
         Status status = updateEpicStatus(idEpic);
         epic.setStatus(status);
     }
-
     @Override
-
-    public void getHistory() {
-        historyManager.getHistory();
+    public List<Task> getHistory() {
+        return historyManager.getHistory();
     }
 
     // удаление всех задач

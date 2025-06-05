@@ -9,7 +9,7 @@ import java.io.*;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.Formatter;
+import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private final File file;
@@ -111,6 +111,18 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return manager;
     }
 
+    // восстановление менеджера из файла
+    private static String historyToString(HistoryManager manager) {
+        StringBuilder sb = new StringBuilder();
+        for (Task task : manager.getHistory()) {
+            sb.append(task.getId()).append(",");
+        }
+        if (sb.length() > 0) {
+            sb.setLength(sb.length() - 1); // удалить последнюю запятую
+        }
+        return sb.toString();
+    }
+
     @Override
     public void updateTask(Task task) {
         super.updateTask(task);
@@ -130,9 +142,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void getHistory() {
-        super.getHistory();
+    public List<Task> getHistory() {
+        List<Task> history = super.getHistory();
         save();
+        return history;
     }
 
     @Override
