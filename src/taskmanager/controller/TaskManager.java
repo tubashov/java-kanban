@@ -6,6 +6,7 @@ import taskmanager.model.SubTask;
 import taskmanager.util.Status;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface TaskManager {
     int generateId();
@@ -41,7 +42,7 @@ public interface TaskManager {
 
     void updateSubTask(SubTask subTask);
 
-    void getHistory();
+    List<Task> getHistory();
 
     // удаление всех задач
     void deleteTasks();

@@ -12,6 +12,10 @@ public class Epic extends Task {
     public Epic() {
     }
 
+    public Epic(String name, String description, Status status) {
+        super(name, description, Status.NEW);  // Вызов конструктора Task
+    }
+
     public Epic(Integer id, String name, String description, Status aNew) {
         super(id, name, description);
     }
