@@ -1,15 +1,14 @@
 package taskmanager.controller;
 
-import taskmanager.model.Epic;
-import taskmanager.model.SubTask;
-import taskmanager.model.Task;
+import taskmanager.model.*;
 import taskmanager.util.*;
 
 import java.io.*;
-
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private final File file;
@@ -40,7 +39,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 writer.write(taskToString(subTask));
                 writer.newLine();
             }
-
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка при сохранении задач в файл", e);
         }
@@ -92,6 +90,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     // загрузка данных из файла
     public static  FileBackedTaskManager loadFromFile (File file) {
         FileBackedTaskManager manager = new FileBackedTaskManager(file, StandardCharsets.UTF_8);
+
+        Map<Integer, Task> tasks = new LinkedHashMap<>();
+
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))) {
             String line = reader.readLine();
 
