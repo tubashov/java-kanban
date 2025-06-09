@@ -46,17 +46,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     // сохранения задачи в строку
     public static String taskToString(Task task) {
-        String type;
         String epicId = "";
+        TaskType type = task.getType();
 
-        if (task instanceof Epic) {
-            type = "EPIC";
-        } else if (task instanceof SubTask) {
-            type = "SUBTASK";
+        if (type == TaskType.SUBTASK) {
             epicId = String.valueOf(((SubTask) task).getEpicId());
-        } else {
-            type = "TASK";
         }
+
         return task.getId() + "," +
                 type + "," +
                 task.getName() + "," +

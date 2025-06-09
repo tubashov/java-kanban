@@ -1,11 +1,13 @@
 package taskmanager.model;
 
 import taskmanager.util.Status;
+import taskmanager.util.TaskType;
 
 import java.util.Objects;
 
 public class Task {
     private Integer id;
+    private String taskType;
     private String name;
     private String description;
     private Status status;
@@ -29,11 +31,23 @@ public class Task {
         this.status = status;
     }
 
+    public Task(Integer id, String taskType, String name, String description, Status status) {
+        this.id = id;
+        this.taskType = taskType;
+        this.name = name;
+        this.description = description;
+        this.status = status;
+    }
+
     public Task() {
     }
 
     public Integer getId() {
         return id;
+    }
+
+    public TaskType getType() {
+        return TaskType.TASK;
     }
 
     public String getName() {
