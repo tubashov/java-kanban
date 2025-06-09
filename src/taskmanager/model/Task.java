@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public class Task {
     private Integer id;
-    private String taskType;
+    //private String taskType;
     private String name;
     private String description;
     private Status status;
@@ -33,7 +33,6 @@ public class Task {
 
     public Task(Integer id, String taskType, String name, String description, Status status) {
         this.id = id;
-        this.taskType = taskType;
         this.name = name;
         this.description = description;
         this.status = status;
