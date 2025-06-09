@@ -13,9 +13,13 @@ public interface TaskManager {
 
     Task addTask(Task task);
 
-    Epic addTask(Epic epic);
+    Epic addEpic(Epic epic);
 
-    SubTask addTask(SubTask subTask);
+//    Epic addEpic(Epic epic);
+
+//    SubTask addTask(SubTask subTask);
+
+    SubTask addSubTask(SubTask subTask);
 
     // получение списка всех задач
     ArrayList<taskmanager.model.Task> getTasks();
