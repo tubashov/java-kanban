@@ -40,6 +40,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 writer.write(taskToString(subTask));
                 writer.newLine();
             }
+            writer.newLine(); // разделяем блок задач и историю
+            writer.write(historyToString(getHistoryManager()));
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка при сохранении задач в файл", e);
         }
@@ -97,10 +99,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 Task task = fromString(line);
                 switch (task.getType()) {
                     case EPIC:
-                        manager.addTask((Epic) task);
+                        manager.addEpic((Epic) task);
                         break;
                     case SUBTASK:
-                        manager.addTask((SubTask) task);
+                        manager.addSubTask((SubTask) task);
                         break;
                     case TASK:
                     default:
