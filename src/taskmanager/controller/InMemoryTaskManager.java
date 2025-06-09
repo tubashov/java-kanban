@@ -14,6 +14,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     private final HistoryManager historyManager = new InMemoryHistoryManager();
 
+    public HistoryManager getHistoryManager() {
+        return historyManager;
+    }
+
     // коллекция для хранения всех типов
     private final HashMap<Integer, Task> tasks = new HashMap<>();
     private final HashMap<Integer, Epic> epics = new HashMap<>();
