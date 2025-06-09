@@ -77,7 +77,7 @@ public class FileBackedTaskManagerTest {
         assertEquals(1, epics.size());
         assertEquals(2, subs.size());
 
-        SubTask restoredSubTask1 = (SubTask) subs.get(0);
+        SubTask restoredSubTask1 = subs.get(0);
         assertEquals(epic.getId(), restoredSubTask1.getEpicId());
     }
 
