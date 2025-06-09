@@ -94,12 +94,17 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
             while ((line = reader.readLine()) != null && !line.isEmpty()) {
                 Task task = fromString(line);
-                if (task instanceof Epic) {
-                    manager.addTask((Epic) task);
-                } else if (task instanceof SubTask) {
-                    manager.addTask((SubTask) task);
-                } else {
-                    manager.addTask(task);
+                switch (task.getType()) {
+                    case EPIC:
+                        manager.addTask((Epic) task);
+                        break;
+                    case SUBTASK:
+                        manager.addTask((SubTask) task);
+                        break;
+                    case TASK:
+                    default:
+                        manager.addTask(task);
+                        break;
                 }
             }
         } catch (IOException e) {
