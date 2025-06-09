@@ -23,6 +23,12 @@ public class InMemoryTaskManager implements TaskManager {
     private final HashMap<Integer, Epic> epics = new HashMap<>();
     private final HashMap<Integer, SubTask> subTasks = new HashMap<>();
 
+    public Task getTaskById(int id) {
+        if (tasks.containsKey(id)) return tasks.get(id);
+        if (epics.containsKey(id)) return epics.get(id);
+        if (subTasks.containsKey(id)) return subTasks.get(id);
+        return null;
+    }
 
     @Override
     public int generateId() {
