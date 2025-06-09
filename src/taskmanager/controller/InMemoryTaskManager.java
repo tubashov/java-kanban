@@ -27,7 +27,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public final Task addTask(Task task) {
+    public Task addTask(Task task) {
         int id = generateId();
         task.setId(id);
         this.tasks.put(id, task);
@@ -35,7 +35,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public final Epic addTask(Epic epic) {
+    public Epic addTask(Epic epic) {
         int id = generateId();
         epic.setId(id);
         this.epics.put(id, epic);
@@ -43,7 +43,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public final SubTask addTask(SubTask subTask) {
+    public SubTask addTask(SubTask subTask) {
         int id = generateId();
         subTask.setId(id);
         this.subTasks.put(id, subTask);
