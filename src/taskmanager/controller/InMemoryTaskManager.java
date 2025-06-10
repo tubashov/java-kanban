@@ -34,7 +34,6 @@ public class InMemoryTaskManager implements TaskManager {
         int id = generateId();
         task.setId(id);
         this.tasks.put(id, task);
-        //return task;
         return task;
     }
 
