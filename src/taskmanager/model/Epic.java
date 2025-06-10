@@ -1,6 +1,7 @@
 package taskmanager.model;
 
 import taskmanager.util.Status;
+import taskmanager.util.TaskType;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -39,6 +40,11 @@ public class Epic extends Task {
 
     public void removeSubtaskIds(Object id) {
         idSubTasks.remove(id);
+    }
+
+    @Override
+    public TaskType getType() {
+        return TaskType.EPIC;
     }
 
     @Override

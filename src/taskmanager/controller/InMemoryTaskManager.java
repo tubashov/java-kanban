@@ -14,11 +14,14 @@ public class InMemoryTaskManager implements TaskManager {
 
     private final HistoryManager historyManager = new InMemoryHistoryManager();
 
-    // коллекция для хранения всех типов
-    private final HashMap<Integer, Task> tasks = new HashMap<>();
-    private final HashMap<Integer, Epic> epics = new HashMap<>();
-    private final HashMap<Integer, SubTask> subTasks = new HashMap<>();
+    public HistoryManager getHistoryManager() {
+        return historyManager;
+    }
 
+    // коллекция для хранения всех типов
+    final HashMap<Integer, Task> tasks = new HashMap<>();
+    final HashMap<Integer, Epic> epics = new HashMap<>();
+    final HashMap<Integer, SubTask> subTasks = new HashMap<>();
 
     @Override
     public int generateId() {
@@ -27,15 +30,16 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public final Task addTask(Task task) {
+    public Task addTask(Task task) {
         int id = generateId();
         task.setId(id);
         this.tasks.put(id, task);
+        //return task;
         return task;
     }
 
     @Override
-    public final Epic addTask(Epic epic) {
+    public Epic addEpic(Epic epic) {
         int id = generateId();
         epic.setId(id);
         this.epics.put(id, epic);
@@ -43,10 +47,16 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public final SubTask addTask(SubTask subTask) {
+    public SubTask addSubTask(SubTask subTask) {
         int id = generateId();
         subTask.setId(id);
         this.subTasks.put(id, subTask);
+        int epicId = subTask.getEpicId();
+        Epic epic = epics.get(epicId);
+        if (epic != null) {
+            epic.setIdSubTask(id); // также нужно добавить id подзадачи в список эпика
+            epic.setStatus(updateEpicStatus(epicId)); // обновление статуса
+        }
         return subTask;
     }
 
@@ -179,6 +189,7 @@ public class InMemoryTaskManager implements TaskManager {
         List<Integer> subTaskIds = epic.getIdSubTask();
         for (Integer subTaskId : subTaskIds) {
             subTasks.remove(subTaskId);
+            historyManager.remove(subTaskId);
         }
         epics.remove(epicId);
         historyManager.remove(epicId);
