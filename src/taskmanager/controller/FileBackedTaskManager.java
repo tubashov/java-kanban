@@ -41,7 +41,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             }
             writer.newLine(); // разделяем блок задач и историю
             writer.write(historyToString(getHistoryManager()));
-            // writer.newLine();
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка при сохранении задач в файл", e);
         }

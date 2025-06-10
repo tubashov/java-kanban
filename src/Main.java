@@ -22,12 +22,12 @@ public class Main {
             manager.addTask(task2);
 
             Epic epic = new Epic("Эпик 1", "Описание эпика", Status.NEW);
-            manager.addTask(epic);
+            manager.addEpic(epic);
 
             SubTask sub1 = new SubTask("Подзадача 1", "К подзадаче 1", Status.NEW, epic.getId());
             SubTask sub2 = new SubTask("Подзадача 2", "К подзадаче 2", Status.DOWN, epic.getId());
-            manager.addTask(sub1);
-            manager.addTask(sub2);
+            manager.addSubTask(sub1);
+            manager.addSubTask(sub2);
 
             // Вызов задач для добавления в историю
             manager.getTask(task1.getId());
