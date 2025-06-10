@@ -43,6 +43,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             }
             writer.newLine(); // разделяем блок задач и историю
             writer.write(historyToString(getHistoryManager()));
+            // writer.newLine();
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка при сохранении задач в файл", e);
         }
@@ -88,32 +89,44 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     // загрузка данных из файла
-    public static  FileBackedTaskManager loadFromFile(File file) {
+    public static FileBackedTaskManager loadFromFile(File file) {
         FileBackedTaskManager manager = new FileBackedTaskManager(file, StandardCharsets.UTF_8);
 
-        Map<Integer, Task> tasks = new LinkedHashMap<>();
-
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))) {
+            // Пропускаем заголовок
             String line = reader.readLine();
 
-            while ((line = reader.readLine()) != null && !line.isEmpty()) {
-                Task task = taskFromString(line);
-                switch (task.getType()) {
-                    case EPIC:
-                        manager.addEpic((Epic) task);
-                        break;
-                    case SUBTASK:
-                        manager.addSubTask((SubTask) task);
-                        break;
-                    case TASK:
-                    default:
-                        manager.addTask(task);
-                        break;
+            // Читаем задачи, пока не встретим пустую строку или конец файла
+            while ((line = reader.readLine()) != null) {
+                if (line.isEmpty()) {
+                    break; // достигли конца задач, дальше история
+                }
+                try {
+                    Task task = taskFromString(line);
+                    switch (task.getType()) {
+                        case EPIC:
+                            manager.addEpic((Epic) task);
+                            break;
+                        case SUBTASK:
+                            manager.addSubTask((SubTask) task);
+                            break;
+                        case TASK:
+                        default:
+                            manager.addTask(task);
+                            break;
+                    }
+                } catch (Exception e) {
+                    System.err.println("Ошибка при разборе задачи из строки: '" + line + "'. Пропущена.");
                 }
             }
-            // Читаем строку истории после пустой строки
+
+            // Читаем строку истории (может быть null или пустой)
             String historyLine = reader.readLine();
-            if (historyLine != null && !historyLine.trim().isEmpty()) {
+            while (historyLine != null && historyLine.trim().isEmpty()) {
+                historyLine = reader.readLine(); // пропускаем пустые строки
+            }
+
+            if (historyLine != null || !historyLine.trim().isEmpty()) {
                 List<Integer> historyIds = historyFromString(historyLine);
                 for (int id : historyIds) {
                     Task task = manager.getTaskById(id);
@@ -127,6 +140,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
         return manager;
     }
+
 
     // получение истории из строки
     public static List<Integer> historyFromString(String value) {
