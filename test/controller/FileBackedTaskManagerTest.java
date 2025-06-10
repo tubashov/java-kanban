@@ -62,12 +62,12 @@ public class FileBackedTaskManagerTest {
     @Test
     void testSaveAndLoadEpicWithSubTasks() {
         Epic epic = new Epic("Epic1", "Epic Description", Status.NEW);
-        manager.addTask(epic);
+        manager.addEpic(epic);
 
         SubTask subTask1 = new SubTask("Sub Task 1", "Description 1", Status.NEW, epic.getId());
         SubTask subTask2 = new SubTask("Sub Task 2", "Description 2", Status.DOWN, epic.getId());
-        manager.addTask(subTask1);
-        manager.addTask(subTask2);
+        manager.addSubTask(subTask1);
+        manager.addSubTask(subTask2);
 
         FileBackedTaskManager restored = FileBackedTaskManager.loadFromFile(tempFile);
 

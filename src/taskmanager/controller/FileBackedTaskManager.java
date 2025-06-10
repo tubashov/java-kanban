@@ -78,7 +78,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             case EPIC:
                 return new Epic(id, name, description, status);
             case SUBTASK:
-                int epicId = Integer.parseInt(fields[5]);
+                int epicId = fields[5].isEmpty() ? 0 : Integer.parseInt(fields[5]);
                 return new SubTask(id, name, description, status, epicId);
             default:
                 throw new IllegalArgumentException("Неизвестный тип задачи: " + type);
