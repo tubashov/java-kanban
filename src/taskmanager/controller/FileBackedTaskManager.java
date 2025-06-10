@@ -131,13 +131,19 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     // получение истории из строки
     public static List<Integer> historyFromString(String value) {
         List<Integer> history = new ArrayList<>();
-        if (value == null || value.isEmpty()) {
+        if (value == null || value.trim().isEmpty()) {
             return history;
         }
 
         String[] ids = value.split(",");
-        for (String id : ids) {
-            history.add(Integer.parseInt(id));
+        for (String idStr : ids) {
+            String trimmed = idStr.trim();
+            try {
+                history.add(Integer.parseInt(trimmed));
+            } catch (NumberFormatException e) {
+                // Логируем или игнорируем некорректные значения
+                System.err.println("Пропущен некорректный id в истории: '" + trimmed + "'");
+            }
         }
         return history;
     }
