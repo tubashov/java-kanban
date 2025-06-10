@@ -48,7 +48,7 @@ public class FileBackedTaskManagerTest {
     // сохранение и загрузка задачи
     @Test
     void testSaveAndLoadSimpleTasks() {
-        Task task = new Task("Test Task", "Description", Status.NEW);
+        Task task = new Task(1,"Test Task", "Description", Status.NEW);
         manager.addTask(task);
 
         FileBackedTaskManager restored = FileBackedTaskManager.loadFromFile(tempFile);
@@ -61,11 +61,11 @@ public class FileBackedTaskManagerTest {
     // сохранение и загрузка эпика с подзадачей
     @Test
     void testSaveAndLoadEpicWithSubTasks() {
-        Epic epic = new Epic("Epic1", "Epic Description", Status.NEW);
+        Epic epic = new Epic(1,"Epic1", "Epic Description", Status.NEW);
         manager.addEpic(epic);
 
-        SubTask subTask1 = new SubTask("Sub Task 1", "Description 1", Status.NEW, epic.getId());
-        SubTask subTask2 = new SubTask("Sub Task 2", "Description 2", Status.DOWN, epic.getId());
+        SubTask subTask1 = new SubTask(1, "Sub Task 1", "Description 1", Status.NEW, epic.getId());
+        SubTask subTask2 = new SubTask(1, "Sub Task 2", "Description 2", Status.DOWN, epic.getId());
         manager.addSubTask(subTask1);
         manager.addSubTask(subTask2);
 
