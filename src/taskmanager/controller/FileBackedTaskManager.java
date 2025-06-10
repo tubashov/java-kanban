@@ -231,7 +231,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         Epic epic = super.getEpic(id);
         if (!isLoading) {
             save();
-        }; // сохранить с обновлённой историей
+        } // сохранить с обновлённой историей
         return epic;
     }
 
@@ -304,7 +304,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         super.removeTask(id);
         if (!isLoading) {
             save();
-        };
+        }
     }
 
     @Override
