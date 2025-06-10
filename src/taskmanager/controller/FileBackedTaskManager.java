@@ -13,6 +13,7 @@ import java.util.List;
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private final File file;
     private final Charset charset;
+    private boolean isLoading = false;
 
     public FileBackedTaskManager(File file, Charset charset) {
         this.file = file;
@@ -89,6 +90,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public static FileBackedTaskManager loadFromFile(File file) {
         FileBackedTaskManager manager = new FileBackedTaskManager(file, StandardCharsets.UTF_8);
 
+        manager.isLoading = true;
+
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))) {
             // Пропускаем заголовок
             String line = reader.readLine();
@@ -135,6 +138,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка загрузки из файла", e);
         }
+        manager.isLoading = false;
         return manager;
     }
 
@@ -189,42 +193,54 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     @Override
     public Task addTask(Task task) {
         Task result = super.addTask(task);
-        save();
+        if (!isLoading) {
+            save();
+        }
         return result;
     }
 
     @Override
     public Epic addEpic(Epic epic) {
         Epic result = super.addEpic(epic);
-        save();
+        if (!isLoading) {
+            save();
+        }
         return result;
     }
 
     @Override
     public SubTask addSubTask(SubTask subTask) {
         SubTask result = super.addSubTask(subTask);
-        save();
+        if (!isLoading) {
+            save();
+        }
         return result;
     }
 
     @Override
     public Task getTask(int id) {
         Task task = super.getTask(id);
-        save(); // сохранить с обновлённой историей
+        if (!isLoading) {
+            save();
+        } // сохранить с обновлённой историей
         return task;
     }
 
     @Override
     public Epic getEpic(int id) {
         Epic epic = super.getEpic(id);
-        save(); // сохранить с обновлённой историей
+        if (!isLoading) {
+            save();
+        }; // сохранить с обновлённой историей
         return epic;
     }
 
     @Override
     public SubTask getSubTask(int id) {
         SubTask subTask = super.getSubTask(id);
-        save(); // сохранить с обновлённой историей
+        if (!isLoading) {
+            save();
+        } // сохранить с обновлённой историей
         return subTask;
     }
 
@@ -232,19 +248,25 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     @Override
     public void updateTask(Task task) {
         super.updateTask(task);
-        save();
+        if (!isLoading) {
+            save();
+        }
     }
 
     @Override
     public void updateEpic(Epic epic) {
         super.updateEpic(epic);
-        save();
+        if (!isLoading) {
+            save();
+        }
     }
 
     @Override
     public void updateSubTask(SubTask subTask) {
         super.updateSubTask(subTask);
-        save();
+        if (!isLoading) {
+            save();
+        }
     }
 
     @Override
@@ -256,36 +278,48 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     @Override
     public void deleteTasks() {
         super.deleteTasks();
-        save();
+        if (!isLoading) {
+            save();
+        }
     }
 
     @Override
     public void deleteEpics() {
         super.deleteEpics();
-        save();
+        if (!isLoading) {
+            save();
+        }
     }
 
     @Override
     public void deleteSubTasks() {
         super.deleteSubTasks();
-        save();
+        if (!isLoading) {
+            save();
+        }
     }
 
     @Override
     public void removeTask(int id) {
         super.removeTask(id);
-        save();
+        if (!isLoading) {
+            save();
+        };
     }
 
     @Override
     public void removeEpic(int epicId) {
         super.removeEpic(epicId);
-        save();
+        if (!isLoading) {
+            save();
+        }
     }
 
     @Override
     public void removeSubTask(int id) {
         super.removeSubTask(id);
-        save();
+        if (!isLoading) {
+            save();
+        }
     }
 }
