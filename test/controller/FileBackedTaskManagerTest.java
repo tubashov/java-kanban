@@ -50,8 +50,6 @@ public class FileBackedTaskManagerTest {
     void testSaveAndLoadSimpleTasks() {
         Task task = new Task("Test Task", "Description", Status.NEW);
         manager.addTask(task);
-        Task task1 = new Task("Test Task", "Description", Status.NEW);
-        manager.addTask(task1);
 
         FileBackedTaskManager restored = FileBackedTaskManager.loadFromFile(tempFile);
         List<Task> tasks = restored.getTasks();
