@@ -124,7 +124,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 historyLine = reader.readLine(); // пропускаем пустые строки
             }
 
-            if (historyLine != null || !historyLine.trim().isEmpty()) {
+            if (historyLine != null && !historyLine.trim().isEmpty()) {
                 List<Integer> historyIds = historyFromString(historyLine);
                 for (int id : historyIds) {
                     Task task = manager.getTaskById(id);
