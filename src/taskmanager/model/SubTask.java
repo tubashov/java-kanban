@@ -3,6 +3,7 @@ package taskmanager.model;
 import java.util.Objects;
 
 import taskmanager.util.Status;
+import taskmanager.util.TaskType;
 
 public class SubTask extends Task {
 
@@ -20,6 +21,11 @@ public class SubTask extends Task {
         this.epicId = epicId;
     }
 
+    public SubTask(String name, String description, Status status, int epicId) {
+        super(name, description, status);
+        this.epicId = epicId;
+    }
+
     public SubTask(Integer epicId) {
         this.epicId = epicId;
     }
@@ -31,6 +37,12 @@ public class SubTask extends Task {
     public int getEpicId() {
         return epicId;
     }
+
+    @Override
+    public TaskType getType() {
+        return TaskType.SUBTASK;
+    }
+
 
     @Override
     public boolean equals(Object object) {

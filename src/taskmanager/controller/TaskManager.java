@@ -6,15 +6,20 @@ import taskmanager.model.SubTask;
 import taskmanager.util.Status;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface TaskManager {
     int generateId();
 
     Task addTask(Task task);
 
-    Epic addTask(Epic epic);
+    Epic addEpic(Epic epic);
 
-    SubTask addTask(SubTask subTask);
+//    Epic addEpic(Epic epic);
+
+//    SubTask addTask(SubTask subTask);
+
+    SubTask addSubTask(SubTask subTask);
 
     // получение списка всех задач
     ArrayList<taskmanager.model.Task> getTasks();
@@ -41,7 +46,7 @@ public interface TaskManager {
 
     void updateSubTask(SubTask subTask);
 
-    void getHistory();
+    List<Task> getHistory();
 
     // удаление всех задач
     void deleteTasks();

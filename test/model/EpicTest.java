@@ -36,10 +36,10 @@ import static taskmanager.util.Status.NEW;
         public void testEpicNotEqualsSubTask() {
 
             Epic epic = new Epic(1, "Test addEpic name", "Test addEpic description", NEW);
-            inMemoryTaskManager.addTask(epic);
+            inMemoryTaskManager.addEpic(epic);
 
             SubTask subTask = new SubTask(1, "Test addSubTask name", "Test addSubTask description", NEW );
-            inMemoryTaskManager.addTask(subTask);
+            inMemoryTaskManager.addSubTask(subTask);
 
             ArrayList<Epic> epics = inMemoryTaskManager.getEpics();
             ArrayList<SubTask> subTasks = inMemoryTaskManager.getSubTasks();
