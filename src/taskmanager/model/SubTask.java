@@ -5,6 +5,9 @@ import java.util.Objects;
 import taskmanager.util.Status;
 import taskmanager.util.TaskType;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class SubTask extends Task {
 
     private int epicId;
@@ -12,17 +15,20 @@ public class SubTask extends Task {
     public SubTask() {
     }
 
-    public SubTask(Integer id, String name, String description, Status status) {
-        super(id, name, description, status);
-    }
+//    public SubTask(Integer id, String name, String description, Status status, LocalDateTime startTime,
+//                   Duration duration, Status status) {
+//        super(id, name, description, startTime, duration, status);
+//    }
 
-    public SubTask(Integer id, String name, String description, Status status, int epicId) {
-        super(id, name, description, status);
+    public SubTask(Integer id, String name, String description, Status status, LocalDateTime startTime,
+                   Duration duration, int epicId) {
+        super(id, name, description, status, startTime, duration);
         this.epicId = epicId;
     }
 
-    public SubTask(String name, String description, Status status, int epicId) {
-        super(name, description, status);
+    public SubTask(String name, String description, Status status, LocalDateTime startTime,
+                   Duration duration, int epicId) {
+        super(name, description, startTime, duration, status);
         this.epicId = epicId;
     }
 
@@ -60,10 +66,14 @@ public class SubTask extends Task {
 
     @Override
     public String toString() {
-        return "tracker.controllers.model.SubTask{id=" + getId() +
+        return "Subtask{" +
+                "id=" + getId() +
                 ", name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +
-                ", status=" + getStatus() + ", " +
-                "epicId=" + getEpicId() + "}";
+                ", status=" + getStatus() +
+                ", startTime=" + getStartTime() +
+                ", duration=" + getDuration() +
+                ", epicId=" + epicId +
+                '}';
     }
 }
