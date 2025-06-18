@@ -4,6 +4,8 @@ import taskmanager.util.Status;
 import taskmanager.util.TaskType;
 
 import java.util.Objects;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 public class Task {
     private Integer id;
@@ -11,6 +13,8 @@ public class Task {
     private String name;
     private String description;
     private Status status;
+    private Duration duration;            // длительность задачи
+    private LocalDateTime startTime;      // время начала задачи
 
     public Task(String name, String description, Status status) {
         this.name = name;
@@ -31,11 +35,14 @@ public class Task {
         this.status = status;
     }
 
-    public Task(Integer id, String taskType, String name, String description, Status status) {
+    public Task(Integer id, String taskType, String name, String description, Status status,
+                LocalDateTime startTime, Duration duration) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.status = status;
+        this.startTime = startTime;
+        this.duration = duration;
     }
 
     public Task() {
@@ -61,6 +68,21 @@ public class Task {
         return status;
     }
 
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public LocalDateTime getEndTime () {
+        if (startTime == null || duration == null) {
+            return null;
+        }
+        return startTime.plus(duration);
+    }
+
     public void setId(Integer id) {
         this.id = id;
     }
@@ -77,6 +99,14 @@ public class Task {
         this.status = status;
     }
 
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
@@ -85,12 +115,14 @@ public class Task {
         return id == task.id &&
                 Objects.equals(name, task.name) &&
                 Objects.equals(description, task.description) &&
-                status == task.status;
+                status == task.status &&
+                Objects.equals(startTime, task.startTime) &&
+                Objects.equals(duration, task.duration);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, status);
+        return Objects.hash(id, name, description, status, startTime, duration);
     }
 
     @Override
@@ -100,6 +132,8 @@ public class Task {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", status=" + status +
+                ", startTime=" + startTime +
+                ",duration=" + duration +
                 '}';
     }
 }
