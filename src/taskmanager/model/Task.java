@@ -28,11 +28,14 @@ public class Task {
         this.description = description;
     }
 
-    public Task(Integer id, String name, String description, Status status) {
+    public Task(Integer id, String name, String description, Status status,
+                LocalDateTime startTime, Duration duration) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.status = status;
+        this.startTime = startTime;
+        this.duration = duration;
     }
 
     public Task(Integer id, String taskType, String name, String description, Status status,

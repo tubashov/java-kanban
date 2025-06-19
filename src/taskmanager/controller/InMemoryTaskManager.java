@@ -216,14 +216,14 @@ public class InMemoryTaskManager implements TaskManager {
             SubTask subTask = this.subTasks.get(subTaskId); // перебор всех подзадач из хэш-таблицы subTasks
             if (subTask.getStatus() == Status.NEW) { // если статус подзадачи в хэш -таблице совпадает со статусом
                 newCount++;                          // подзадачи рассматриваемог epica, срабатывает счетчик
-            } else if (subTask.getStatus() == Status.DOWN) {
+            } else if (subTask.getStatus() == Status.DONE) {
                 doneCount++;
             }
         }
         if (subTaskIds.size() == newCount) { // определяем по счетчикам статус epica
             return Status.NEW;
         } else if (subTaskIds.size() == doneCount) {
-            return Status.DOWN;
+            return Status.DONE;
         } else {
             return Status.IN_PROGRESS;
         }

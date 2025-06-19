@@ -7,8 +7,11 @@ import taskmanager.util.Status;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -65,7 +68,7 @@ public class FileBackedTaskManagerTest {
         manager.addEpic(epic);
 
         SubTask subTask1 = new SubTask("Sub Task 1", "Description 1", Status.NEW, epic.getId());
-        SubTask subTask2 = new SubTask("Sub Task 2", "Description 2", Status.DOWN, epic.getId());
+        SubTask subTask2 = new SubTask("Sub Task 2", "Description 2", Status.DONE, epic.getId());
         manager.addSubTask(subTask1);
         manager.addSubTask(subTask2);
 
