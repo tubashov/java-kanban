@@ -67,8 +67,10 @@ public class FileBackedTaskManagerTest {
         Epic epic = new Epic("Epic1", "Epic Description", Status.NEW);
         manager.addEpic(epic);
 
-        SubTask subTask1 = new SubTask("Sub Task 1", "Description 1", Status.NEW, epic.getId());
-        SubTask subTask2 = new SubTask("Sub Task 2", "Description 2", Status.DONE, epic.getId());
+        SubTask subTask1 = new SubTask(1, "Подзадача 1", "Тест-подзадача 1",
+                Status.NEW, LocalDateTime.now(), Duration.ofMinutes(15), epic.getId());
+        SubTask subTask2 = new SubTask(2, "Подзадача 2", "Тест-подзадача 2",
+                Status.NEW, LocalDateTime.now(), Duration.ofMinutes(15), epic.getId());
         manager.addSubTask(subTask1);
         manager.addSubTask(subTask2);
 

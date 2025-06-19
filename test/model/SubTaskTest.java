@@ -6,6 +6,8 @@ import taskmanager.controller.InMemoryTaskManager;
 import taskmanager.model.Epic;
 import taskmanager.model.SubTask;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,8 +26,8 @@ public class SubTaskTest {
     @Test
     public void testSubTaskEqualsSubTask() {
 
-        SubTask subTask = new SubTask(1, "Test addSubTask name",
-                "Test addSubTask description", NEW);
+        SubTask subTask = new SubTask(1,"Подзадача", "Описание", NEW,
+                LocalDateTime.now(), Duration.ofMinutes(10));
 
         final int subTaskId = subTask.getId();
 
@@ -37,8 +39,8 @@ public class SubTaskTest {
     @Test
     public void testSubTaskNotEqualsEpic() {
 
-        SubTask subTask = new SubTask(1, "Test addSubTask name", "Test addSubTask description",
-                NEW );
+        SubTask subTask = new SubTask(1,"Подзадача", "Описание", NEW,
+                LocalDateTime.now(), Duration.ofMinutes(10));
         inMemoryTaskManager.addSubTask(subTask);
 
         Epic epic = new Epic(1, "Test addEpic name", "Test addEpic description", NEW);
