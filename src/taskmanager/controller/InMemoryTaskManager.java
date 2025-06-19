@@ -124,14 +124,9 @@ public class InMemoryTaskManager implements TaskManager {
     // список подзадач определенного эпика
     @Override
     public ArrayList<SubTask> getSubTaskList(int epicId) {
-        ArrayList<SubTask> listSubTasks = new ArrayList<>();
-        Epic epic = this.epics.get(epicId);
-        List<Integer> SubTaskIds = epic.getIdSubTask();
-        for (Integer SubTaskId : SubTaskIds) {
-            SubTask SubTask = subTasks.get(SubTaskId);
-            listSubTasks.add(SubTask);
-        }
-        return listSubTasks;
+        return epics.get(epicId).getIdSubTask().stream()
+                .map(subTasks::get)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     // обновление задачи
@@ -175,9 +170,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteEpics() {
-        for (Integer taskId : epics.keySet()) {
-            historyManager.remove(taskId);
-        }
+        tasks.keySet().forEach(historyManager::remove);
         epics.clear();
         subTasks.clear();
     }
@@ -233,24 +226,35 @@ public class InMemoryTaskManager implements TaskManager {
     // изменение статуса эпика
     @Override
     public Status updateEpicStatus(int epicId) {
-        int newCount = 0;
-        int doneCount = 0;
-        Epic epic = this.epics.get(epicId); // создаем объект класса epic с epicId, поступившего в параметре метода
-        List<Integer> SubTaskIds = epic.getIdSubTask(); // создаем список idSubTask из этого epica
-        for (Integer SubTaskId : SubTaskIds) { // обход всех элементов списка
-            SubTask SubTask = this.subTasks.get(SubTaskId); // перебор всех подзадач из хэш-таблицы SubTasks
-            if (SubTask.getStatus() == Status.NEW) { // если статус подзадачи в хэш -таблице совпадает со статусом
-                newCount++;                          // подзадачи рассматриваемог epica, срабатывает счетчик
-            } else if (SubTask.getStatus() == Status.DONE) {
-                doneCount++;
-            }
-        }
-        if (SubTaskIds.size() == newCount) { // определяем по счетчикам статус epica
-            return Status.NEW;
-        } else if (SubTaskIds.size() == doneCount) {
-            return Status.DONE;
+        // Получаем эпик по ID
+        Epic epic = this.epics.get(epicId);
+
+        // Получаем список подзадач эпика, заменяя id → сами объекты SubTask
+        List<SubTask> subTasksOfEpic = epic.getIdSubTask().stream()
+                .map(subTasks::get)                  // получаем объект SubTask по ID
+                .filter(Objects::nonNull)            // отбрасываем возможные null
+                .collect(Collectors.toList());       // собираем в список
+
+        // Количество подзадач со статусом NEW
+        long newCount = subTasksOfEpic.stream()
+                .filter(sub -> sub.getStatus() == Status.NEW)
+                .count();
+
+        // Количество подзадач со статусом DONE
+        long doneCount = subTasksOfEpic.stream()
+                .filter(sub -> sub.getStatus() == Status.DONE)
+                .count();
+
+        // Всего подзадач
+        int total = subTasksOfEpic.size();
+
+        // Определение статуса эпика
+        if (total == 0 || newCount == total) {
+            return Status.NEW; // Все NEW или вообще нет подзадач
+        } else if (doneCount == total) {
+            return Status.DONE; // Все DONE
         } else {
-            return Status.IN_PROGRESS;
+            return Status.IN_PROGRESS; // Остальные случаи: смешанные или IN_PROGRESS
         }
     }
 

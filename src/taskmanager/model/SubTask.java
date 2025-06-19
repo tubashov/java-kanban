@@ -12,7 +12,7 @@ public class SubTask extends Task {
 
     private int epicId;
 
-    public SubTask() {
+    public SubTask(int i, String string, String s, LocalDateTime localDateTime, Duration duration, Status aNew) {
     }
 
 //    public SubTask(Integer id, String name, String description, Status status, LocalDateTime startTime,

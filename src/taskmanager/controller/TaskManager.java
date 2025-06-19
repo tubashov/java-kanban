@@ -15,10 +15,6 @@ public interface TaskManager {
 
     Epic addEpic(Epic epic);
 
-//    Epic addEpic(Epic epic);
-
-//    SubTask addTask(SubTask subTask);
-
     SubTask addSubTask(SubTask subTask);
 
     // получение списка всех задач
@@ -39,7 +35,7 @@ public interface TaskManager {
     // список подзадач определенного эпика
     ArrayList<SubTask> getSubTaskList(int epicId);
 
-    List<Task> getPrioritizedTasks();
+     List<Task> getPrioritizedTasks();
 
     // обновление задачи
     void updateTask(taskmanager.model.Task task);
