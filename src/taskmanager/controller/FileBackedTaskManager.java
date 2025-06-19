@@ -7,6 +7,8 @@ import taskmanager.util.*;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,11 +58,16 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             epicId = String.valueOf(((SubTask) task).getEpicId());
         }
 
+        String startTime = task.getStartTime() == null ? "" : task.getStartTime().toString();
+        String duration = task.getDuration() == null ? "" : task.getDuration().toString();
+
         return task.getId() + "," +
                 type + "," +
                 task.getName() + "," +
                 task.getStatus() + "," +
                 task.getDescription() + "," +
+                task.getStartTime() + "," +
+                task.getDuration() + "," +
                 epicId;
     }
 
@@ -72,6 +79,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         String name = fields[2];
         Status status = Status.valueOf(fields[3]);
         String description = fields[4];
+        LocalDateTime startTime = fields[5].isEmpty() ? null : LocalDateTime.parse(fields[5]);
+        Duration duration = fields[6].isEmpty() ? null : Duration.parse(fields[6]);
 
         switch (type) {
             case TASK:
@@ -79,8 +88,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             case EPIC:
                 return new Epic(id, name, description, status);
             case SUBTASK:
-                int epicId = fields[5].isEmpty() ? 0 : Integer.parseInt(fields[5]);
-                return new SubTask(id, name, description, status, epicId);
+                int epicId = fields[7].isEmpty() ? 0 : Integer.parseInt(fields[7]);
+                return new SubTask(id, name, description, status, startTime, duration, epicId);
             default:
                 throw new IllegalArgumentException("Неизвестный тип задачи: " + type);
         }

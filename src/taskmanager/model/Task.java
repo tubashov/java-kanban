@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 
 public class Task {
     private Integer id;
-    //private String taskType;
     private String name;
     private String description;
     private Status status;
@@ -22,6 +21,13 @@ public class Task {
         this.status = status;
     }
 
+    public Task(Integer id, String name, String description, Status status) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.status = status;
+    }
+
     public Task(Integer id, String name, String description) {
         this.id = id;
         this.name = name;
@@ -29,16 +35,6 @@ public class Task {
     }
 
     public Task(Integer id, String name, String description, Status status,
-                LocalDateTime startTime, Duration duration) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.status = status;
-        this.startTime = startTime;
-        this.duration = duration;
-    }
-
-    public Task(Integer id, String taskType, String name, String description, Status status,
                 LocalDateTime startTime, Duration duration) {
         this.id = id;
         this.name = name;
@@ -136,7 +132,7 @@ public class Task {
                 ", description='" + description + '\'' +
                 ", status=" + status +
                 ", startTime=" + startTime +
-                ",duration=" + duration +
+                ", duration=" + duration +
                 '}';
     }
 }

@@ -16,8 +16,8 @@ public class Main {
             FileBackedTaskManager manager = new FileBackedTaskManager(file, Charset.defaultCharset());
 
             // Примерная дата и продолжительность
-            LocalDateTime now = LocalDateTime.of(2024, 6, 15, 10, 0);
-            Duration duration = Duration.ofMinutes(90);
+            LocalDateTime now = LocalDateTime.of(2025, 6, 15, 10, 0);
+            Duration duration = Duration.ofMinutes(30);
 
             Task task1 = new Task(1, "Задача 1", "Описание задачи 1", Status.NEW, now, duration);
             Task task2 = new Task(2, "Задача 2", "Описание задачи 2", Status.IN_PROGRESS, now.plusHours(2), duration);
@@ -28,9 +28,9 @@ public class Main {
             manager.addEpic(epic);
 
             SubTask sub1 = new SubTask(4, "Подзадача 1", "К подзадаче 1", Status.NEW,
-                    now.plusHours(1), Duration.ofMinutes(60), epic.getId());
-                SubTask sub2 = new SubTask(5, "Подзадача 2", "К подзадаче 2", Status.DONE,
-                    now.plusHours(3), Duration.ofMinutes(45), epic.getId());
+                    now.plusHours(1), Duration.ofMinutes(5), epic.getId());
+                SubTask sub2 = new SubTask(5, "Подзадача 2", "К подзадаче 2", Status.NEW,
+                    now.plusHours(3), Duration.ofMinutes(10), epic.getId());
             manager.addSubTask(sub1);
             manager.addSubTask(sub2);
 
