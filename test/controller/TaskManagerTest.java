@@ -32,10 +32,11 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertTrue(id2 > id1, "ID должен увеличиваться");
     }
 
+    // добавление задачи
     @Test
     void shouldAddTaskSuccessfully() {
         Task task = new Task(1, "Тестовая задача", "Описание", Status.NEW,
-                LocalDateTime.of(2024, 6, 15, 10, 0),
+                LocalDateTime.of(2025, 6, 16, 10, 0),
                 Duration.ofMinutes(60));
 
         Task addedTask = manager.addTask(task);
@@ -46,6 +47,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(task.getDescription(), retrievedTask.getDescription(), "Описание должно совпадать");
         assertEquals(task.getStatus(), retrievedTask.getStatus(), "Статус должен совпадать");
     }
+
+    // добавление эпика
     @Test
     void shouldAddEpicAndGetItById() {
         Epic epic = new Epic(1, "Эпик 1", "Тест-эпик 1", Status.NEW);
@@ -58,6 +61,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(epic.getDescription(), retrieved.getDescription());
     }
 
+    // добавление подзадачи и проверка наличия связанного эпика
     @Test
     void shouldAddSubTaskAndGetItById() {
         Epic epic = manager.addEpic(new Epic(1, "Эпик 1", "Тест-эпик 1", Status.NEW));
@@ -71,19 +75,21 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(epic.getId(), retrieved.getEpicId());
     }
 
+    // добавление задачи, эпика, подзадачи
     @Test
-    void shouldReturnAllTasksAndSubTasksAndEpics() {
+    void shouldReturnAllTasksAndEpicsAndSubTasks() {
         manager.addTask(new Task(1,"Задача 1", "Тест-задача 1", Status.NEW,
                 LocalDateTime.now(), Duration.ofMinutes(30)));
         manager.addEpic(new Epic(1, "Эпик 1", "Тест-эпик 1", Status.NEW));
         manager.addSubTask(new SubTask(1, "Подзадача 1", "Тест-подзадача 1", Status.NEW,
-                LocalDateTime.now(), Duration.ofMinutes(15), 2));
+                LocalDateTime.now(), Duration.ofMinutes(15), 1));
 
         assertEquals(1, manager.getTasks().size());
         assertEquals(1, manager.getEpics().size());
         assertEquals(1, manager.getSubTasks().size());
     }
 
+    // добавление эпика без подзадач
     @Test
     void shouldReturnEmptyListIfNoSubTasksInEpic() {
         Epic epic = manager.addEpic(new Epic(1, "Эпик без подзадач", "Тест-эпик без подзадач",
@@ -91,11 +97,12 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertTrue(manager.getSubTaskList(epic.getId()).isEmpty());
     }
 
+    // упорядоченность задач по времени
     @Test
     void shouldReturnPrioritizedTasksInOrder() {
         Task t1 = new Task(1, "Задача 1", "Первичная", Status.NEW,
                 LocalDateTime.of(2025, 6, 16, 10, 0), Duration.ofMinutes(30));
-        Task t2 = new Task(2,"Задача 2", "Последующая", Status.NEW,
+        Task t2 = new Task(2, "Задача 2", "Последующая", Status.NEW,
                 LocalDateTime.of(2025, 6, 16, 11, 0), Duration.ofMinutes(30));
 
         manager.addTask(t2);
@@ -106,15 +113,43 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(t2.getName(), prioritized.get(1).getName());
     }
 
+    // проверка расчета при пересечении временных интервалов
+    @Test
+    void shouldDetectedOverlapping() {
+        Task t1 = new Task(1, "Задача 1", "Первичная", Status.NEW,
+                LocalDateTime.of(2025, 6, 16, 10, 0), Duration.ofMinutes(60));
+        Task t2 = new Task(2, "Задача 2", "Последующая", Status.NEW,
+                LocalDateTime.of(2025, 6, 16, 10, 30), Duration.ofMinutes(60));
+
+        manager.addTask(t1);
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> manager.addTask(t2));
+
+        assertEquals("Ошибка: задача пересекается по времени с другой.", exception.getMessage());
+    }
+
+    // проверка расчета при непересечении временных интервалов
+    @Test
+    void shouldAllowNonOverlapping() {
+        Task t1 = new Task(1, "Задача 1", "Первичная", Status.NEW,
+                LocalDateTime.of(2025, 6, 16, 10, 0), Duration.ofMinutes(60));
+        Task t2 = new Task(2, "Задача 2", "Последующая", Status.NEW,
+                LocalDateTime.of(2025, 6, 16, 11, 0), Duration.ofMinutes(60));
+
+        manager.addTask(t1);
+        assertDoesNotThrow(() -> manager.addTask(t2));
+    }
+
+    // изменение задачи
     @Test
     void shouldUpdateTask() {
         Task task = manager.addTask(new Task(1, "Задача 1", "Новая", Status.NEW,
                 LocalDateTime.now(), Duration.ofMinutes(20)));
         task.setDescription("Измененная");
         manager.updateTask(task);
-        assertEquals("Измененная", manager.getTask(task.getId()).getName());
+        assertEquals("Измененная", manager.getTask(task.getId()).getDescription());
     }
 
+    // расчет статуса эпика на основании статуса подзадачи
     @Test
     void shouldUpdateSubTaskAndReflectOnEpicStatus() {
         Epic epic = manager.addEpic(new Epic(1, "Эпик 1", "Тест-эпик статус",
@@ -128,6 +163,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(Status.DONE, manager.getEpic(epic.getId()).getStatus());
     }
 
+    // удаление всех задач
     @Test
     void shouldDeleteAllTasks() {
         manager.addTask(new Task(1, "Задача 1", "Тест-задача удаление", Status.NEW,
@@ -136,6 +172,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertTrue(manager.getTasks().isEmpty());
     }
 
+    // удаление подзадач
     @Test
     void shouldDeleteAllSubTasksAndUpdateEpic() {
         Epic epic = manager.addEpic(new Epic(1, "Эпик 1", "Тест-эпик 1", Status.NEW));
@@ -146,6 +183,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertTrue(manager.getEpic(epic.getId()).getIdSubTask().isEmpty());
     }
 
+    // удаление задачи по id
     @Test
     void shouldDeleteTaskById() {
         Task task = manager.addTask(new Task(1, "Задача 1", "Тест-задача 1 удаление", Status.NEW,
@@ -154,6 +192,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertNull(manager.getTask(task.getId()));
     }
 
+    // обновление статуса эпика при изменении статуса задачи
     @Test
     void shouldUpdateEpicStatusCorrectly() {
         Epic epic = manager.addEpic(new Epic(1, "Эпик 1", "Тест-эпик статус", Status.NEW));
