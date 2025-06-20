@@ -96,5 +96,28 @@ public class InMemoryHystoryManagerTest {
         assertFalse(history.contains(task3));
     }
 
+    // сохранение задач по порядку
+    @Test
+    void saveOrderOfTask() {
+        historyManager.add(task1);
+        historyManager.add(task2);
+        historyManager.add(task3);
 
+        List<Task> history = historyManager.getHistory();
+        assertEquals(List.of(task1,task2,task3), history, "Порядок задач в истории должен сохраняться");
+    }
+
+    //
+    @Test
+    void shouldMoveTaskToEnd() {
+        historyManager.add(task1);
+        historyManager.add(task2);
+        historyManager.add(task3);
+
+        historyManager.add(task2);
+
+        List<Task> history = historyManager.getHistory();
+        assertEquals(List.of(task1,task3,task2), history, "Повторно просмотренная задача должна переместиться" +
+                "в конец истории");
+    }
 }
