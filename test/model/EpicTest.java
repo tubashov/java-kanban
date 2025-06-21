@@ -6,6 +6,8 @@ import taskmanager.controller.InMemoryTaskManager;
 import taskmanager.model.Epic;
 import taskmanager.model.SubTask;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,11 +24,11 @@ import static taskmanager.util.Status.NEW;
 
         @Test
         public void testEpicEqualsEpic() {
-
             Epic epic = new Epic(1, "Test addEpic name", "Test addEpic description", NEW);
 
-            final int epicId = epic.getId();
+            inMemoryTaskManager.addEpic(epic); // добавить эпик в менеджер
 
+            final int epicId = epic.getId();
             final Epic savedEpic = inMemoryTaskManager.getEpic(epicId);
 
             assertEquals(epic, savedEpic, "Задачи не совпадают.");
@@ -35,11 +37,14 @@ import static taskmanager.util.Status.NEW;
         @Test
         public void testEpicNotEqualsSubTask() {
 
-            Epic epic = new Epic(1, "Test addEpic name", "Test addEpic description", NEW);
-            inMemoryTaskManager.addTask(epic);
+            LocalDateTime now = LocalDateTime.of(2025, 6, 15, 10, 0);
 
-            SubTask subTask = new SubTask(1, "Test addSubTask name", "Test addSubTask description", NEW );
-            inMemoryTaskManager.addTask(subTask);
+            Epic epic = new Epic(1, "Эпик 1", "Тест-эпик 1", NEW);
+            inMemoryTaskManager.addEpic(epic);
+
+            SubTask subTask = new SubTask(1, "Подзадача 1", "Тест-подзадча 1", now.plusHours(1),
+                    Duration.ofMinutes(5), NEW);
+            inMemoryTaskManager.addSubTask(subTask);//
 
             ArrayList<Epic> epics = inMemoryTaskManager.getEpics();
             ArrayList<SubTask> subTasks = inMemoryTaskManager.getSubTasks();
