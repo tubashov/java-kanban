@@ -24,11 +24,11 @@ import static taskmanager.util.Status.NEW;
 
         @Test
         public void testEpicEqualsEpic() {
-
             Epic epic = new Epic(1, "Test addEpic name", "Test addEpic description", NEW);
 
-            final int epicId = epic.getId();
+            inMemoryTaskManager.addEpic(epic); // добавить эпик в менеджер
 
+            final int epicId = epic.getId();
             final Epic savedEpic = inMemoryTaskManager.getEpic(epicId);
 
             assertEquals(epic, savedEpic, "Задачи не совпадают.");

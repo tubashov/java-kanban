@@ -16,6 +16,7 @@ class EpicStatusTest {
     private InMemoryTaskManager manager;
     private Epic epic;
     private int epicId;
+    private int subTaskCounter = 0;
 
     @BeforeEach
     void setUp() {
@@ -26,8 +27,12 @@ class EpicStatusTest {
     }
 
     private void addSubTask(Status status) {
-        SubTask sub = new SubTask(1,"Подзадача", "Описание", status,
-                LocalDateTime.now(), Duration.ofMinutes(10), epicId);
+        LocalDateTime baseTime = LocalDateTime.of(2025, 6, 20, 18, 0);
+        LocalDateTime startTime = baseTime.plusMinutes(15 * subTaskCounter++);  // разное время
+
+        SubTask sub = new SubTask(0, "Подзадача " + subTaskCounter, "Тест-подзадача", status,
+                startTime, Duration.ofMinutes(10), epic.getId());
+
         manager.addSubTask(sub);
     }
 

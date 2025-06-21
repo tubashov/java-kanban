@@ -27,7 +27,10 @@ public class SubTaskTest {
     public void testSubTaskEqualsSubTask() {
 
         SubTask subTask = new SubTask(1,"Подзадача", "Описание", NEW,
-                LocalDateTime.now(), Duration.ofMinutes(10));
+                LocalDateTime.of(2025, 6, 20, 18, 00),
+                Duration.ofMinutes(10));
+
+        inMemoryTaskManager.addSubTask(subTask);
 
         final int subTaskId = subTask.getId();
 
@@ -40,7 +43,8 @@ public class SubTaskTest {
     public void testSubTaskNotEqualsEpic() {
 
         SubTask subTask = new SubTask(1,"Подзадача", "Описание", NEW,
-                LocalDateTime.now(), Duration.ofMinutes(10));
+                LocalDateTime.of(2025, 6, 20, 18, 30),
+                Duration.ofMinutes(10));
         inMemoryTaskManager.addSubTask(subTask);
 
         Epic epic = new Epic(1, "Test addEpic name", "Test addEpic description", NEW);
