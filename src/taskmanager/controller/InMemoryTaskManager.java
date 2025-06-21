@@ -201,10 +201,10 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void removeEpic(int epicId) {
         Epic epic = this.epics.get(epicId);
-        List<Integer> SubTaskIds = epic.getIdSubTask();
-        for (Integer SubTaskId : SubTaskIds) {
-            subTasks.remove(SubTaskId);
-            historyManager.remove(SubTaskId);
+        List<Integer> idSubTasks = epic.getIdSubTask();
+        for (Integer idSubTask : idSubTasks) {
+            subTasks.remove(idSubTask);
+            historyManager.remove(idSubTask);
         }
         epics.remove(epicId);
         historyManager.remove(epicId);
