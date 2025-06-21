@@ -78,11 +78,14 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     // добавление задачи, эпика, подзадачи
     @Test
     void shouldReturnAllTasksAndEpicsAndSubTasks() {
-        manager.addTask(new Task(1,"Задача 1", "Тест-задача 1", Status.NEW,
-                LocalDateTime.now(), Duration.ofMinutes(30)));
+        Task task = new Task(1, "Задача 1", "Тест-задача 1", Status.NEW,
+                LocalDateTime.of(2025, 6, 20, 18, 0),
+                Duration.ofMinutes(10));
+        manager.addTask(task);
         manager.addEpic(new Epic(1, "Эпик 1", "Тест-эпик 1", Status.NEW));
         manager.addSubTask(new SubTask(1, "Подзадача 1", "Тест-подзадача 1", Status.NEW,
-                LocalDateTime.now(), Duration.ofMinutes(15), 1));
+                LocalDateTime.of(2025, 6, 20, 18, 30),
+                Duration.ofMinutes(10)));
 
         assertEquals(1, manager.getTasks().size());
         assertEquals(1, manager.getEpics().size());
@@ -152,13 +155,15 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     // расчет статуса эпика на основании статуса подзадачи
     @Test
     void shouldUpdateSubTaskAndReflectOnEpicStatus() {
-        Epic epic = manager.addEpic(new Epic(1, "Эпик 1", "Тест-эпик статус",
-                Status.NEW));
-        SubTask sub = manager.addSubTask(new SubTask(1, "Подзадача 1", "Тест-подзадача 1",
-                LocalDateTime.now(), Duration.ofMinutes(10), Status.NEW));
+        Epic epic = manager.addEpic(new Epic(1, "Эпик 1", "Тест-эпик статус", Status.NEW));
+
+        SubTask sub = new SubTask(null, "Подзадача 1", "Тест-подзадача 1",
+                Status.NEW, LocalDateTime.now(), Duration.ofMinutes(10), epic.getId());
+        sub = manager.addSubTask(sub); // подзадача зарегистрирована
 
         sub.setStatus(Status.DONE);
-        manager.updateSubTask(sub);
+        manager.updateSubTask(sub); // изменение статуса в менеджере
+
         assertEquals(Status.DONE, manager.getSubTask(sub.getId()).getStatus());
         assertEquals(Status.DONE, manager.getEpic(epic.getId()).getStatus());
     }
@@ -197,10 +202,12 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     void shouldUpdateEpicStatusCorrectly() {
         Epic epic = manager.addEpic(new Epic(1, "Эпик 1", "Тест-эпик статус", Status.NEW));
 
-        SubTask sub1 = new SubTask(1, "Подзадача 1", "Тест-подзадача новая", Status.NEW,
-                LocalDateTime.now(), Duration.ofMinutes(15), epic.getId());
-        SubTask sub2 = new SubTask(1, "Подзадача 1", "Тест-подзадача завершенная", Status.DONE,
-                LocalDateTime.now(), Duration.ofMinutes(15), epic.getId());
+        SubTask sub1 = new SubTask(1, "Подзадача 1", "Тест-подзадача завершенная", Status.DONE,
+                LocalDateTime.of(2025, 6, 20, 18, 00),
+                Duration.ofMinutes(10), epic.getId());
+        SubTask sub2 = new SubTask(1, "Подзадача 1", "Тест-подзадача новая", Status.NEW,
+                LocalDateTime.of(2025, 6, 20, 18, 30),
+                Duration.ofMinutes(10), epic.getId());
 
         manager.addSubTask(sub1);
         manager.addSubTask(sub2);

@@ -226,37 +226,37 @@ public class InMemoryTaskManager implements TaskManager {
     // изменение статуса эпика
     @Override
     public Status updateEpicStatus(int epicId) {
-        // Получаем эпик по ID
         Epic epic = this.epics.get(epicId);
+        if (epic == null) return null;
 
-        // Получаем список подзадач эпика, заменяя id → сами объекты SubTask
         List<SubTask> subTasksOfEpic = epic.getIdSubTask().stream()
-                .map(subTasks::get)                  // получаем объект SubTask по ID
-                .filter(Objects::nonNull)            // отбрасываем возможные null
-                .collect(Collectors.toList());       // собираем в список
+                .map(subTasks::get)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
 
-        // Количество подзадач со статусом NEW
         long newCount = subTasksOfEpic.stream()
                 .filter(sub -> sub.getStatus() == Status.NEW)
                 .count();
 
-        // Количество подзадач со статусом DONE
         long doneCount = subTasksOfEpic.stream()
                 .filter(sub -> sub.getStatus() == Status.DONE)
                 .count();
 
-        // Всего подзадач
         int total = subTasksOfEpic.size();
 
-        // Определение статуса эпика
+        Status newStatus;
         if (total == 0 || newCount == total) {
-            return Status.NEW; // Все NEW или вообще нет подзадач
+            newStatus = Status.NEW;
         } else if (doneCount == total) {
-            return Status.DONE; // Все DONE
+            newStatus = Status.DONE;
         } else {
-            return Status.IN_PROGRESS; // Остальные случаи: смешанные или IN_PROGRESS
+            newStatus = Status.IN_PROGRESS;
         }
+
+        epic.setStatus(newStatus); // установка статуса
+        return newStatus;
     }
+
 
     // расчет времени эпика
     private void updateEpicTime(Epic epic) {
@@ -329,7 +329,7 @@ public class InMemoryTaskManager implements TaskManager {
         LocalDateTime start2 = t2.getStartTime();
         LocalDateTime end2 = start2.plus(t2.getDuration());
 
-        return !(end1.isBefore(start2) || end2.isBefore(start1));
+        return start1.isBefore(end2) && start2.isBefore(end1);
     }
 
     // проверка пересечения новой задачи с остальными

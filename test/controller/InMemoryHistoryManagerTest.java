@@ -13,7 +13,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class InMemoryHystoryManagerTest {
+public class InMemoryHistoryManagerTest {
     HistoryManager historyManager;
 
     private Task task1;
