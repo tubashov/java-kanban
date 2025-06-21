@@ -20,12 +20,20 @@ public class InMemoryHystoryManagerTest {
     private Task task2;
     private Task task3;
 
-    BeforeEach
+    @BeforeEach
     void setUp() {
+        task1 = new Task(1, "Задача 1", "Описание 1", Status.NEW,
+                LocalDateTime.of(2025, 6, 20, 18, 0),
+                Duration.ofMinutes(10));
+
+        task2 = new Task(2, "Задача 2", "Описание 2", Status.NEW,
+                LocalDateTime.of(2025, 6, 20, 18, 20),
+                Duration.ofMinutes(20));
+
+        task3 = new Task(3, "Задача 3", "Описание 3", Status.NEW,
+                LocalDateTime.of(2025, 6, 20, 18, 40),
+                Duration.ofMinutes(30));
         historyManager = new InMemoryHistoryManager();
-        task1 = new Task(1, "Задача 1", "Описание 1", Status.NEW, LocalDateTime.now(), Duration.ofMinutes(10));
-        task2 = new Task(2, "Задача 2", "Описание 2", Status.NEW, LocalDateTime.now().plusHours(1), Duration.ofMinutes(20));
-        task3 = new Task(3, "Задача 3", "Описание 3", Status.NEW, LocalDateTime.now().plusHours(2), Duration.ofMinutes(30));
     }
 
     // пустая история
@@ -61,8 +69,8 @@ public class InMemoryHystoryManagerTest {
         historyManager.add(task2);
         historyManager.add(task3);
 
-        List<Task> history = historyManager.getHistory();
         historyManager.remove(task1.getId());
+        List<Task> history = historyManager.getHistory();
 
         assertEquals(2, history.size());
         assertFalse(history.contains(task1));
@@ -75,8 +83,8 @@ public class InMemoryHystoryManagerTest {
         historyManager.add(task2);
         historyManager.add(task3);
 
-        List<Task> history = historyManager.getHistory();
         historyManager.remove(task2.getId());
+        List<Task> history = historyManager.getHistory();
 
         assertEquals(2, history.size());
         assertFalse(history.contains(task2));
@@ -89,11 +97,11 @@ public class InMemoryHystoryManagerTest {
         historyManager.add(task2);
         historyManager.add(task3);
 
-        List<Task> history = historyManager.getHistory();
         historyManager.remove(task1.getId());
+        List<Task> history = historyManager.getHistory();
 
         assertEquals(2, history.size());
-        assertFalse(history.contains(task3));
+        assertFalse(history.contains(task1));
     }
 
     // сохранение задач по порядку
@@ -107,7 +115,7 @@ public class InMemoryHystoryManagerTest {
         assertEquals(List.of(task1,task2,task3), history, "Порядок задач в истории должен сохраняться");
     }
 
-    //
+    // изменение порядка при повторном просмотре
     @Test
     void shouldMoveTaskToEnd() {
         historyManager.add(task1);
