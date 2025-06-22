@@ -127,7 +127,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         manager.addTask(t1);
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> manager.addTask(t2));
 
-        assertEquals("Ошибка: задача пересекается по времени с другой.", exception.getMessage());
+        assertEquals("Ошибка: задача пересекается по времени.", exception.getMessage());
     }
 
     // проверка расчета при непересечении временных интервалов

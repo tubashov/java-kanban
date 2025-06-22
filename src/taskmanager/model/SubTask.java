@@ -15,11 +15,6 @@ public class SubTask extends Task {
     public SubTask(int i, String string, String s, LocalDateTime localDateTime, Duration duration, Status aNew) {
     }
 
-//    public SubTask(Integer id, String name, String description, Status status, LocalDateTime startTime,
-//                   Duration duration, Status status) {
-//        super(id, name, description, startTime, duration, status);
-//    }
-
     public SubTask(Integer id, String name, String description, Status status, LocalDateTime startTime,
                    Duration duration, int epicId) {
         super(id, name, description, status, startTime, duration);

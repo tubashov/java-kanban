@@ -48,17 +48,18 @@ public class InMemoryTaskManager implements TaskManager {
 
         boolean hasTime = task.getStartTime() != null && task.getDuration() != null;
 
-        // задача не пересекается по врмемени с другими — в оба списка
-        if (hasTime) {
-            if (hasIntersection(task)) { // пересекается по врмемени - не добавляем ни в HashMap, ни в TreeSet
-                System.out.println("Задача не добавлена: пересекается по времени.");
-                return null;
-            }
-            tryAddToPrioritized(task); // отсортированный список
+        // есть время, и задача пересекается — исключение
+        if (hasTime && hasIntersection(task)) {
+            throw new IllegalArgumentException("Ошибка: задача пересекается по времени.");
         }
 
-        // не пересекается по времени или нет времени - основной список
-        this.tasks.put(id, task);
+        // есть время и нет пересечения — добавить в отсортированный список
+        if (hasTime) {
+            tryAddToPrioritized(task);
+        }
+
+        // добавить в основной список
+        tasks.put(id, task);
         return task;
     }
 
@@ -77,25 +78,28 @@ public class InMemoryTaskManager implements TaskManager {
 
         boolean hasTime = subTask.getStartTime() != null && subTask.getDuration() != null;
 
-        // задача не пересекается по врмемени с другими — в оба списка
-        if (hasTime) {
-            if (hasIntersection(subTask)) { // пересекается по врмемени - не добавляем ни в HashMap, ни в TreeSet
-                System.out.println("Задача не добавлена: пересекается по времени.");
-                return null;
-            }
-            tryAddToPrioritized(subTask); // отсортированный список
+        // есть время, нет пересечений с другими задачами
+        if (hasTime && hasIntersection(subTask)) {
+            throw new IllegalArgumentException("Ошибка: подзадача пересекается по времени с другой задачей.");
         }
 
-        // не пересекается по времени или нет времени - основной список
+        // добавить в приоритетный список
+        if (hasTime) {
+            tryAddToPrioritized(subTask);
+        }
+
+        // добавить общий список
         subTasks.put(id, subTask);
+
 
         int epicId = subTask.getEpicId();
         Epic epic = epics.get(epicId);
         if (epic != null) {
-            epic.setIdSubTask(id); // также нужно добавить id подзадачи в список эпика
-            epic.setStatus(updateEpicStatus(epicId)); // обновление статуса
-            updateEpicTime(epic); // обновление времени эпика
+            epic.getIdSubTask().add(id); // добавить id подзадачи в эпик
+            updateEpicStatus(epicId);   // обновлить статус эпика
+            updateEpicTime(epic);       // обновить время эпика
         }
+
         return subTask;
     }
 
