@@ -271,6 +271,7 @@ public class InMemoryTaskManager implements TaskManager {
             return;
         }
 
+        // переменные для вычислений
         LocalDateTime start = null;
         LocalDateTime end = null;
         Duration totalDuration = Duration.ZERO;
@@ -298,6 +299,7 @@ public class InMemoryTaskManager implements TaskManager {
 
         epic.setStartTime(start);
         epic.setDuration(totalDuration);
+        epic.setEndTime(end);
     }
 
     // проверка при добавлении задачи в отсортированный список
