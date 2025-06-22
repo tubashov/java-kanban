@@ -167,7 +167,7 @@ public class InMemoryTaskManager implements TaskManager {
 
         // задача не пересекается по врмемени с другими — в оба списка
         if (hasTime) {
-            if (hasIntersection(task)){ // пересекается по врмемени
+            if (hasIntersection(task)) { // пересекается по врмемени
                 throw new IllegalArgumentException();
             }
             tryAddToPrioritized(task); // отсортированный список
