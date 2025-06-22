@@ -3,10 +3,13 @@ package taskmanager.model;
 import taskmanager.util.Status;
 import taskmanager.util.TaskType;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Objects;
 
 public class Epic extends Task {
+
+    private LocalDateTime endTime;
 
     private ArrayList<Integer> idSubTasks = new ArrayList<>();
 
@@ -32,6 +35,14 @@ public class Epic extends Task {
 
     public void setIdSubTask(int idSubTask) {
         this.idSubTasks.add(idSubTask);
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        return endTime;
     }
 
     public void cleanSubtaskIds() {
