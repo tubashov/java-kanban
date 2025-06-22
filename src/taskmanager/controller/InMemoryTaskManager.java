@@ -45,8 +45,20 @@ public class InMemoryTaskManager implements TaskManager {
     public Task addTask(Task task) {
         int id = generateId();
         task.setId(id);
+
+        boolean hasTime = task.getStartTime() != null && task.getDuration() != null;
+
+        // задача не пересекается по врмемени с другими — в оба списка
+        if (hasTime) {
+            if (hasIntersection(task)) { // пересекается по врмемени - не добавляем ни в HashMap, ни в TreeSet
+                System.out.println("Задача не добавлена: пересекается по времени.");
+                return null;
+            }
+            tryAddToPrioritized(task); // отсортированный список
+        }
+
+        // не пересекается по времени или нет времени - основной список
         this.tasks.put(id, task);
-        tryAddToPrioritized(task);
         return task;
     }
 
@@ -62,14 +74,27 @@ public class InMemoryTaskManager implements TaskManager {
     public SubTask addSubTask(SubTask subTask) {
         int id = generateId();
         subTask.setId(id);
-        this.subTasks.put(id, subTask);
-        tryAddToPrioritized(subTask);
+
+        boolean hasTime = subTask.getStartTime() != null && subTask.getDuration() != null;
+
+        // задача не пересекается по врмемени с другими — в оба списка
+        if (hasTime) {
+            if (hasIntersection(subTask)) { // пересекается по врмемени - не добавляем ни в HashMap, ни в TreeSet
+                System.out.println("Задача не добавлена: пересекается по времени.");
+                return null;
+            }
+            tryAddToPrioritized(subTask); // отсортированный список
+        }
+
+        // не пересекается по времени или нет времени - основной список
+        subTasks.put(id, subTask);
+
         int epicId = subTask.getEpicId();
         Epic epic = epics.get(epicId);
         if (epic != null) {
             epic.setIdSubTask(id); // также нужно добавить id подзадачи в список эпика
             epic.setStatus(updateEpicStatus(epicId)); // обновление статуса
-            updateEpicTime(epic);
+            updateEpicTime(epic); // обновление времени эпика
         }
         return subTask;
     }
@@ -132,9 +157,20 @@ public class InMemoryTaskManager implements TaskManager {
     // обновление задачи
     @Override
     public void updateTask(Task task) {
-        tryRemoveFromPrioritized(task);
+        boolean hasTime = task.getStartTime() != null && task.getDuration() != null;
+
+        tryRemoveFromPrioritized(task); // удаление старой версии перед обновлением
+
+        // задача не пересекается по врмемени с другими — в оба списка
+        if (hasTime) {
+            if (hasIntersection(task)){ // пересекается по врмемени
+                throw new IllegalArgumentException();
+            }
+            tryAddToPrioritized(task); // отсортированный список
+        }
+
+        // не пересекается по времени или нет времени - основной список
         tasks.put(task.getId(), task);
-        tryAddToPrioritized(task);
     }
 
     @Override
@@ -144,14 +180,28 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateSubTask(SubTask subTask) {
-        tryRemoveFromPrioritized(subTask);
-        this.subTasks.put(subTask.getId(), subTask);
-        tryAddToPrioritized(subTask);
-        Integer idEpic = subTask.getEpicId();
-        Epic epic = epics.get(idEpic);
-        Status status = updateEpicStatus(idEpic);
-        epic.setStatus(status);
-        updateEpicTime(epic);
+        boolean hasTime = subTask.getStartTime() != null && subTask.getDuration() != null;
+
+        tryRemoveFromPrioritized(subTasks.get(subTask.getId())); // удаление старой версии перед обновлением
+
+        // подзадача не пересекается по врмемени с другими — в оба списка
+        if (hasTime) {
+            if (hasIntersection(subTask)) { // пересекается по врмемени
+                throw new IllegalArgumentException();
+            }
+            tryAddToPrioritized(subTask);
+        }
+
+        // обновление подзадачи
+        subTasks.put(subTask.getId(), subTask);
+
+        // обновление статуса и времени эпика
+        Integer epicId = subTask.getEpicId();
+        Epic epic = epics.get(epicId);
+        if (epic != null) {
+            epic.setStatus(updateEpicStatus(epicId));
+            updateEpicTime(epic);
+        }
     }
 
     @Override

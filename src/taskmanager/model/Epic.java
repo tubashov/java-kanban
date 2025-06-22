@@ -34,7 +34,7 @@ public class Epic extends Task {
     }
 
     public void setIdSubTask(int idSubTask) {
-        this.idSubTasks.add(idSubTask);
+        idSubTasks.add(idSubTask);
     }
 
     public void setEndTime(LocalDateTime endTime) {
