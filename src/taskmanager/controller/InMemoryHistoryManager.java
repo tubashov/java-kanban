@@ -17,7 +17,6 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     private Node head;
     private Node tail;
-    //private List<Task> history = new ArrayList<>();
 
     // просмотр истории
     @Override
@@ -55,7 +54,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         return taskHistory;
     }
 
-        private void removeNode(Node node) { // метода удаления задачи из двухсвязанного списка
+    private void removeNode(Node node) { // метод удаления задачи из двухсвязанного списка
         if (node == null) {
             return;
         }
@@ -63,13 +62,13 @@ public class InMemoryHistoryManager implements HistoryManager {
         Node next = node.next;
 
         if (prev != null) {
-            prev.next = next;
-            } else {
+            prev.next = next; // обновление ссылки следующего после предыдующего узла: prev.next вместо удаляемого -
+            } else {          // следующий узел
             head = next;
         }
         if (next != null) {
-            next.prev = prev;
-        } else {
+            next.prev = prev; // обновление у следующего узла ссылки предыдущего: next.prev вместо удаляемого -
+            } else {          // предыдущий узел
             tail = prev;
         }
     }
