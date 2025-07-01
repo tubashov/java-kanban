@@ -1,5 +1,6 @@
 package taskmanager.http.handler;
 
+import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import taskmanager.controller.TaskManager;
@@ -46,6 +47,9 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
                     exchange.close();
                     break;
             }
+        } catch (JsonSyntaxException e) {
+            exchange.sendResponseHeaders(400, 0);  // 400 Bad Request при некорректном JSON
+            exchange.close();
         } catch (NotFoundException e) {
             sendNotFound(exchange, e.getMessage());             // Отправляем 404 при отсутствии задачи
         } catch (Exception e) {

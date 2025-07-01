@@ -14,6 +14,14 @@ public class BaseHttpHandler {
         exchange.close();
     }
 
+    protected void sendBadRequest(HttpExchange exchange, String message) throws IOException {
+        byte[] resp = message.getBytes(StandardCharsets.UTF_8);
+        exchange.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
+        exchange.sendResponseHeaders(400, resp.length);
+        exchange.getResponseBody().write(resp);
+        exchange.close();
+    }
+
     protected void sendNotFound(HttpExchange exchange, String message) throws IOException {
         byte[] resp = message.getBytes(StandardCharsets.UTF_8);
         exchange.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
