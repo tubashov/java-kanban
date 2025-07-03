@@ -30,6 +30,10 @@ public class InMemoryTaskManager implements TaskManager {
     final HashMap<Integer, Epic> epics = new HashMap<>();
     final HashMap<Integer, SubTask> subTasks = new HashMap<>();
 
+//    public boolean containsTask(int id) {
+//        return tasks.containsKey(id);
+//    }
+
     @Override
     public int generateId() {
         count++;
@@ -379,7 +383,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     // проверка пересечения двух задач
-    private boolean isOverlapping(Task t1, Task t2) {
+    public boolean isOverlapping(Task t1, Task t2) {
         if (t1.getStartTime() == null || t1.getDuration() == null ||
                 t2.getStartTime() == null || t2.getDuration() == null) {
             return false;

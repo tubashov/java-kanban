@@ -17,11 +17,11 @@ public class Epic extends Task {
     }
 
     public Epic(String name, String description, Status status) {
-        super(name, description, Status.NEW);  // Вызов конструктора Task
+        super(name, description, status);  // Вызов конструктора Task
     }
 
-    public Epic(Integer id, String name, String description, Status aNew) {
-        super(id, name, description);
+    public Epic(Integer id, String name, String description, Status status) {
+        super(id, name, description, status);
     }
 
     public Epic(Integer id, String name, String description, ArrayList<Integer> idSubTasks) {

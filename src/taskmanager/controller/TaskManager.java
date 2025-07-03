@@ -62,4 +62,6 @@ public interface TaskManager {
 
     // изменение статуса эпика
     Status updateEpicStatus(int epicId);
+
+    boolean isOverlapping(Task task1, Task task2);
 }

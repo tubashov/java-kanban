@@ -46,9 +46,9 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
                     break;
             }
         } catch (NotFoundException e) {
-            sendNotFound(exchange, e.getMessage());         // Обработка ошибки — объект не найден
+            sendNotFound(exchange, e.getMessage()); // 404 при отсутствии эпика
         } catch (Exception e) {
-            sendServerError(exchange, "Внутренняя ошибка сервера: " + e.getMessage()); // Общая ошибка
+            sendServerError(exchange, "Внутренняя ошибка сервера: " + e.getMessage()); // 500 при других ошибках
         }
     }
 

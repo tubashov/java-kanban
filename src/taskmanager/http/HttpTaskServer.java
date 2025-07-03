@@ -37,11 +37,11 @@ public class HttpTaskServer {
         this.manager = manager;
         this.server = HttpServer.create(new InetSocketAddress(PORT), 0);
 
-        server.createContext("/tasks/task", new TaskHandler(manager, gson));
-        server.createContext("/tasks/subtask", new SubTaskHandler(manager, gson));
-        server.createContext("/tasks/epic", new EpicHandler(manager, gson));
-        server.createContext("/tasks/history", new HistoryHandler(manager, gson));
-        server.createContext("/tasks", new PrioritizedHandler(manager, gson));
+        server.createContext("/tasks", new TaskHandler(manager, gson));
+        server.createContext("/epics", new EpicHandler(manager, gson));
+        server.createContext("/subtasks", new SubTaskHandler(manager, gson));
+        server.createContext("/history", new HistoryHandler(manager, gson));
+        server.createContext("/prioritized", new PrioritizedHandler(manager, gson));
     }
 
     public void start() {

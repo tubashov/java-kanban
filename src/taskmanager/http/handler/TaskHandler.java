@@ -13,7 +13,7 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-// Обработчик HTTP-запросов для задач (Task)
+// Обработчик HTTP-запросов для задач
 public class TaskHandler extends BaseHttpHandler implements HttpHandler {
 
     private final TaskManager manager;
@@ -43,15 +43,18 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
                     handleDelete(exchange, query);                 // Обработка DELETE-запроса
                     break;
                 default:
-                    exchange.sendResponseHeaders(405, 0);         // Если метод не поддерживается, ответ 405
+                    exchange.sendResponseHeaders(405, 0);         // 405 метод не поддерживается
                     exchange.close();
                     break;
             }
         } catch (JsonSyntaxException e) {
             exchange.sendResponseHeaders(400, 0);  // 400 Bad Request при некорректном JSON
             exchange.close();
+        } catch (IllegalArgumentException e) {
+            exchange.sendResponseHeaders(406, 0); // 406 пересечение задач
+            exchange.close();
         } catch (NotFoundException e) {
-            sendNotFound(exchange, e.getMessage());             // Отправляем 404 при отсутствии задачи
+            sendNotFound(exchange, e.getMessage()); // 404 при отсутствии задачи
         } catch (Exception e) {
             sendServerError(exchange, "Внутренняя ошибка сервера: " + e.getMessage()); // 500 при других ошибках
         }
@@ -67,10 +70,10 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
             int id = Integer.parseInt(query.split("=")[1]);
             Task task = manager.getTask(id);
             if (task == null) throw new NotFoundException("Задача с id=" + id + " не найдена");
-            sendText(exchange, gson.toJson(task));              // Отправляем задачу
+            sendText(exchange, gson.toJson(task));              // Вернуть задачу как JSON
         } else {
             List<Task> tasks = manager.getTasks();
-            sendText(exchange, gson.toJson(tasks));             // Отправляем список всех задач
+            sendText(exchange, gson.toJson(tasks));             // Вернуть список как JSON
         }
     }
 
@@ -79,11 +82,12 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
         String body = readBody(exchange);
         Task task = gson.fromJson(body, Task.class);
         if (task.getId() == null || manager.getTask(task.getId()) == null) {
-            manager.addTask(task);                               // Создаем новую задачу, если нет id или она не найдена
+            manager.addTask(task);  // Новая задачу, если нет id или она не найдена
         } else {
-            manager.updateTask(task);                            // Обновляем существующую задачу
+            manager.updateTask(task); // Обновление существующей задачи
         }
-        sendCreated(exchange);                                   // Отправляем 201 Created
+        sendCreated(exchange); // 201 — успешно создано/обновлено
+
     }
 
     // Обработка DELETE-запроса.
@@ -93,10 +97,10 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
             Task task = manager.getTask(id);
             if (task == null) throw new NotFoundException("Задача с id=" + id + " не найдена");
             manager.removeTask(id);
-            sendText(exchange, "Задача с id=" + id + " удалена"); // Подтверждаем удаление
+            sendText(exchange, "Задача с id=" + id + " удалена"); // Удалениет по id
         } else {
             manager.deleteTasks();
-            sendText(exchange, "Все задачи удалены");            // Подтверждаем удаление всех задач
+            sendText(exchange, "Все задачи удалены"); // Удаление всех задач
         }
     }
 }

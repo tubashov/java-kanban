@@ -1,18 +1,18 @@
 package taskmanager.http.handler;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import taskmanager.controller.TaskManager;
-import taskmanager.model.SubTask;
 import taskmanager.exceptions.NotFoundException;
-import com.google.gson.Gson;
+import taskmanager.model.SubTask;
 
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-// Обработчик HTTP-запросов.
 public class SubTaskHandler extends BaseHttpHandler implements HttpHandler {
 
     private final TaskManager manager;
@@ -23,32 +23,41 @@ public class SubTaskHandler extends BaseHttpHandler implements HttpHandler {
         this.gson = gson;
     }
 
+    // Основной метод обработки HTTP-запросов
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         try {
-            String method = exchange.getRequestMethod();    // Получаем HTTP-метод
+            String method = exchange.getRequestMethod();
             URI requestURI = exchange.getRequestURI();
-            String query = requestURI.getQuery();           // Получаем параметры запроса
+            String query = requestURI.getQuery();
 
             switch (method) {
+                // Обработка GET-запроса
                 case "GET":
-                    handleGet(exchange, query);               // Обработка GET-запроса
+                    handleGet(exchange, query);
                     break;
+                // Обработка POST-запроса
                 case "POST":
-                    handlePost(exchange);                     // Обработка POST-запроса
+                    handlePost(exchange);
                     break;
+                // Обработка DELETE-запроса
                 case "DELETE":
-                    handleDelete(exchange, query);            // Обработка DELETE-запроса
+                    handleDelete(exchange, query);
                     break;
                 default:
-                    exchange.sendResponseHeaders(405, 0);     // Метод не поддерживается
+                    exchange.sendResponseHeaders(405, 0); // 405 — метод не поддерживается
                     exchange.close();
-                    break;
             }
+        } catch (JsonSyntaxException e) {
+            exchange.sendResponseHeaders(400, 0); // 400 — неверный JSON
+            exchange.close();
+        } catch (IllegalArgumentException e) {
+            exchange.sendResponseHeaders(406, 0); // 406 пересечение задач
+            exchange.close();
         } catch (NotFoundException e) {
-            sendNotFound(exchange, e.getMessage());         // Отправляем 404 при отсутствии объекта
+            sendNotFound(exchange, e.getMessage()); // 404 — подзадача не найдена
         } catch (Exception e) {
-            sendServerError(exchange, "Внутренняя ошибка сервера: " + e.getMessage()); // Общая ошибка сервера
+            sendServerError(exchange, "Ошибка сервера: " + e.getMessage()); // 500 — внутренняя ошибка
         }
     }
 
@@ -57,41 +66,53 @@ public class SubTaskHandler extends BaseHttpHandler implements HttpHandler {
         return new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
     }
 
-    // Обработка GET-запроса.
+    // Обработка GET-запроса
     private void handleGet(HttpExchange exchange, String query) throws IOException, NotFoundException {
         if (query != null && query.contains("id=")) {
             int id = Integer.parseInt(query.split("=")[1]);
-            SubTask subTask = manager.getSubTask(id);
-            if (subTask == null) throw new NotFoundException("Подзадача с id=" + id + " не найдена");
-            sendText(exchange, gson.toJson(subTask));        // Отправляем подзадачу в JSON
+            SubTask subtask = manager.getSubTask(id); // Получить подзадачу по id
+            if (subtask == null) {
+                throw new NotFoundException("Подзадача с id=" + id + " не найдена");
+            }
+            sendText(exchange, gson.toJson(subtask)); // Вернуть подзадачу как JSON
         } else {
-            List<SubTask> subTasks = manager.getSubTasks();
-            sendText(exchange, gson.toJson(subTasks));        // Отправляем список всех подзадач
+            List<SubTask> subtasks = manager.getSubTasks();
+            sendText(exchange, gson.toJson(subtasks)); // Вернуть список как JSON
         }
     }
 
     // Обработка POST-запроса.
     private void handlePost(HttpExchange exchange) throws IOException {
         String body = readBody(exchange);
-        SubTask subTask = gson.fromJson(body, SubTask.class);
-        if (subTask.getId() == null || manager.getSubTask(subTask.getId()) == null) {
-            manager.addSubTask(subTask);                      // Создаем новую подзадачу
-        } else {
-            manager.updateSubTask(subTask);                   // Обновляем существующую подзадачу
+        SubTask subtask = gson.fromJson(body, SubTask.class); // JSON в объект
+
+        boolean isNew = subtask.getId() == null || manager.getSubTask(subtask.getId()) == null;
+
+        try {
+            if (isNew) {
+                manager.addSubTask(subtask); //Новая подзадача
+            } else {
+                manager.updateSubTask(subtask); // Обновление существующей
+            }
+            sendCreated(exchange); // 201 — успешно создано/обновлено
+        } catch (IllegalArgumentException e) {
+            exchange.sendResponseHeaders(406, 0);  // 406 — пересечение по времени
+            exchange.close();
         }
-        sendCreated(exchange);                                 // Отправляем 201 Created
     }
 
-    // Обработка DELETE-запроса.
+    // Обработка DELETE-запроса
     private void handleDelete(HttpExchange exchange, String query) throws IOException, NotFoundException {
         if (query != null && query.contains("id=")) {
             int id = Integer.parseInt(query.split("=")[1]);
-            SubTask subTask = manager.getSubTask(id);
-            if (subTask == null) throw new NotFoundException("Подзадача с id=" + id + " не найдена");
-            manager.removeSubTask(id);
+            SubTask subtask = manager.getSubTask(id);
+            if (subtask == null) {
+                throw new NotFoundException("Подзадача с id=" + id + " не найдена");
+            }
+            manager.removeSubTask(id); // Удаление по id
             sendText(exchange, "Подзадача с id=" + id + " удалена");
         } else {
-            manager.deleteSubTasks();
+            manager.deleteSubTasks(); // Удаление всех подзадач
             sendText(exchange, "Все подзадачи удалены");
         }
     }
