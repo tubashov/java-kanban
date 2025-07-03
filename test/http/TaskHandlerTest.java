@@ -1,7 +1,6 @@
 package http;
 
 import org.junit.jupiter.api.*;
-import taskmanager.controller.InMemoryTaskManager;
 import taskmanager.model.Task;
 import taskmanager.util.Status;
 

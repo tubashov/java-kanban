@@ -4,11 +4,9 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import taskmanager.controller.TaskManager;
 import taskmanager.model.Task;
-import taskmanager.exceptions.NotFoundException;
 import com.google.gson.Gson;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 // Обработчик для истории просмотра задач (History)
