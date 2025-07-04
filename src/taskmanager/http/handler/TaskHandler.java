@@ -20,42 +20,7 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
        super(taskManager,gson);
     }
 
-    // Обработка HTTP-запросов
-//    @Override
-//    public void handle(HttpExchange exchange) throws IOException {
-//        try {
-//            String method = exchange.getRequestMethod();        // Получаем HTTP-метод (GET, POST, DELETE)
-//            URI requestURI = exchange.getRequestURI();
-//            String query = requestURI.getQuery();               // Получаем строку параметров запроса
-//
-//            switch (method) {
-//                case "GET":
-//                    handleGet(exchange, query);                   // Обработка GET-запроса
-//                    break;
-//                case "POST":
-//                    handlePost(exchange);                         // Обработка POST-запроса
-//                    break;
-//                case "DELETE":
-//                    handleDelete(exchange, query);                 // Обработка DELETE-запроса
-//                    break;
-//                default:
-//                    exchange.sendResponseHeaders(405, 0);         // 405 метод не поддерживается
-//                    exchange.close();
-//                    break;
-//            }
-//        } catch (JsonSyntaxException e) {
-//            exchange.sendResponseHeaders(400, 0);  // 400 Bad Request при некорректном JSON
-//            exchange.close();
-//        } catch (IllegalArgumentException e) {
-//            exchange.sendResponseHeaders(406, 0); // 406 пересечение задач
-//            exchange.close();
-//        } catch (NotFoundException e) {
-//            sendNotFound(exchange, e.getMessage()); // 404 при отсутствии задачи
-//        } catch (Exception e) {
-//            sendServerError(exchange, "Внутренняя ошибка сервера: " + e.getMessage()); // 500 при других ошибках
-//        }
-//    }
-
+    // Чтение тела запроса в строку
     private String readBody(HttpExchange exchange) throws IOException {
         return new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
     }

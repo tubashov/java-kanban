@@ -1,7 +1,6 @@
 package taskmanager.http.handler;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import taskmanager.controller.TaskManager;
@@ -9,55 +8,17 @@ import taskmanager.exceptions.NotFoundException;
 import taskmanager.model.SubTask;
 
 import java.io.IOException;
-import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+// Обработчик HTTP-запросов для задач
 public class SubTaskHandler extends BaseHttpHandler implements HttpHandler {
 
     public SubTaskHandler(TaskManager taskManager, Gson gson) {
         super(taskManager,gson);
     }
 
-    // Основной метод обработки HTTP-запросов
-//    @Override
-//    public void handle(HttpExchange exchange) throws IOException {
-//        try {
-//            String method = exchange.getRequestMethod();
-//            URI requestURI = exchange.getRequestURI();
-//            String query = requestURI.getQuery();
-//
-//            switch (method) {
-//                // Обработка GET-запроса
-//                case "GET":
-//                    handleGet(exchange, query);
-//                    break;
-//                // Обработка POST-запроса
-//                case "POST":
-//                    handlePost(exchange);
-//                    break;
-//                // Обработка DELETE-запроса
-//                case "DELETE":
-//                    handleDelete(exchange, query);
-//                    break;
-//                default:
-//                    exchange.sendResponseHeaders(405, 0); // 405 — метод не поддерживается
-//                    exchange.close();
-//            }
-//        } catch (JsonSyntaxException e) {
-//            exchange.sendResponseHeaders(400, 0); // 400 — неверный JSON
-//            exchange.close();
-//        } catch (IllegalArgumentException e) {
-//            exchange.sendResponseHeaders(406, 0); // 406 пересечение задач
-//            exchange.close();
-//        } catch (NotFoundException e) {
-//            sendNotFound(exchange, e.getMessage()); // 404 — подзадача не найдена
-//        } catch (Exception e) {
-//            sendServerError(exchange, "Ошибка сервера: " + e.getMessage()); // 500 — внутренняя ошибка
-//        }
-//    }
-
-    // Чтение тела запроса
+    // Чтение тела запроса в строку
     private String readBody(HttpExchange exchange) throws IOException {
         return new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
     }

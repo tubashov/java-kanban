@@ -8,7 +8,6 @@ import taskmanager.exceptions.NotFoundException;
 import com.google.gson.Gson;
 
 import java.io.IOException;
-import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -18,35 +17,6 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
     public EpicHandler(TaskManager taskManager, Gson gson) {
         super(taskManager,gson);
     }
-
-//    @Override
-//    public void handle(HttpExchange exchange) throws IOException {
-//        try {
-//            String method = exchange.getRequestMethod();    // Получаем метод запроса
-//            URI requestURI = exchange.getRequestURI();
-//            String query = requestURI.getQuery();           // Получаем параметры запроса
-//
-//            switch (method) {
-//                case "GET":
-//                    handleGet(exchange, query);               // Обработка GET-запроса
-//                    break;
-//                case "POST":
-//                    handlePost(exchange);                     // Обработка POST-запроса
-//                    break;
-//                case "DELETE":
-//                    handleDelete(exchange, query);            // Обработка DELETE-запроса
-//                    break;
-//                default:
-//                    exchange.sendResponseHeaders(405, 0);     // Метод не поддерживается
-//                    exchange.close();
-//                    break;
-//            }
-//        } catch (NotFoundException e) {
-//            sendNotFound(exchange, e.getMessage()); // 404 при отсутствии эпика
-//        } catch (Exception e) {
-//            sendServerError(exchange, "Внутренняя ошибка сервера: " + e.getMessage()); // 500 при других ошибках
-//        }
-//    }
 
     // Чтение тела запроса в строку
     private String readBody(HttpExchange exchange) throws IOException {
