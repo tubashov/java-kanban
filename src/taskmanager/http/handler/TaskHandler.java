@@ -1,6 +1,5 @@
 package taskmanager.http.handler;
 
-import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import taskmanager.controller.TaskManager;
@@ -9,7 +8,6 @@ import taskmanager.exceptions.NotFoundException;
 import com.google.gson.Gson;
 
 import java.io.IOException;
-import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
