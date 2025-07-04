@@ -8,8 +8,8 @@ public class Node  {
     Node prev;
 
     public Node(Node prev, Task task, Node next) {
+        this.prev = prev;
         this.task = task;
-        this.next = null;
-        this.prev = null;
+        this.next = next;
     }
 }
