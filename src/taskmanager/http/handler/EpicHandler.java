@@ -15,42 +15,38 @@ import java.util.List;
 // Обработчик HTTP-запросов
 public class EpicHandler extends BaseHttpHandler implements HttpHandler {
 
-    private final TaskManager manager;
-    private final Gson gson;
-
     public EpicHandler(TaskManager taskManager, Gson gson) {
-        this.manager = taskManager;
-        this.gson = gson;
+        super(taskManager,gson);
     }
 
-    @Override
-    public void handle(HttpExchange exchange) throws IOException {
-        try {
-            String method = exchange.getRequestMethod();    // Получаем метод запроса
-            URI requestURI = exchange.getRequestURI();
-            String query = requestURI.getQuery();           // Получаем параметры запроса
-
-            switch (method) {
-                case "GET":
-                    handleGet(exchange, query);               // Обработка GET-запроса
-                    break;
-                case "POST":
-                    handlePost(exchange);                     // Обработка POST-запроса
-                    break;
-                case "DELETE":
-                    handleDelete(exchange, query);            // Обработка DELETE-запроса
-                    break;
-                default:
-                    exchange.sendResponseHeaders(405, 0);     // Метод не поддерживается
-                    exchange.close();
-                    break;
-            }
-        } catch (NotFoundException e) {
-            sendNotFound(exchange, e.getMessage()); // 404 при отсутствии эпика
-        } catch (Exception e) {
-            sendServerError(exchange, "Внутренняя ошибка сервера: " + e.getMessage()); // 500 при других ошибках
-        }
-    }
+//    @Override
+//    public void handle(HttpExchange exchange) throws IOException {
+//        try {
+//            String method = exchange.getRequestMethod();    // Получаем метод запроса
+//            URI requestURI = exchange.getRequestURI();
+//            String query = requestURI.getQuery();           // Получаем параметры запроса
+//
+//            switch (method) {
+//                case "GET":
+//                    handleGet(exchange, query);               // Обработка GET-запроса
+//                    break;
+//                case "POST":
+//                    handlePost(exchange);                     // Обработка POST-запроса
+//                    break;
+//                case "DELETE":
+//                    handleDelete(exchange, query);            // Обработка DELETE-запроса
+//                    break;
+//                default:
+//                    exchange.sendResponseHeaders(405, 0);     // Метод не поддерживается
+//                    exchange.close();
+//                    break;
+//            }
+//        } catch (NotFoundException e) {
+//            sendNotFound(exchange, e.getMessage()); // 404 при отсутствии эпика
+//        } catch (Exception e) {
+//            sendServerError(exchange, "Внутренняя ошибка сервера: " + e.getMessage()); // 500 при других ошибках
+//        }
+//    }
 
     // Чтение тела запроса в строку
     private String readBody(HttpExchange exchange) throws IOException {
@@ -58,7 +54,8 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
     }
 
     // Обработка GET-запроса.
-    private void handleGet(HttpExchange exchange, String query) throws IOException, NotFoundException {
+    @Override
+    protected void processGet(HttpExchange exchange, String query) throws IOException, NotFoundException {
         if (query != null && query.contains("id=")) {
             int id = Integer.parseInt(query.split("=")[1]);
             Epic epic = manager.getEpic(id);
@@ -71,7 +68,8 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
     }
 
     // Обработка POST-запроса.
-    private void handlePost(HttpExchange exchange) throws IOException {
+    @Override
+    protected void processPost(HttpExchange exchange) throws IOException {
         String body = readBody(exchange);
         Epic epic = gson.fromJson(body, Epic.class);
         if (epic.getId() == null || manager.getEpic(epic.getId()) == null) {
@@ -83,7 +81,8 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
     }
 
     // Обработка DELETE-запроса.
-    private void handleDelete(HttpExchange exchange, String query) throws IOException, NotFoundException {
+    @Override
+    protected void processDelete(HttpExchange exchange, String query) throws IOException, NotFoundException {
         if (query != null && query.contains("id=")) {
             int id = Integer.parseInt(query.split("=")[1]);
             Epic epic = manager.getEpic(id);

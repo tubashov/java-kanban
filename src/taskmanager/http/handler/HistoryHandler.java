@@ -12,12 +12,8 @@ import java.util.List;
 // Обработчик для истории просмотра задач (History)
 public class HistoryHandler extends BaseHttpHandler implements HttpHandler {
 
-    private final TaskManager manager;
-    private final Gson gson;
-
     public HistoryHandler(TaskManager taskManager, Gson gson) {
-        this.manager = taskManager;
-        this.gson = gson;
+        super(taskManager,gson);
     }
 
     // Основной метод обработки запросов

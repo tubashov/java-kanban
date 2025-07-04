@@ -12,12 +12,8 @@ import java.util.List;
 // Обработчик для получения задач, отсортированных по приоритету
 public class PrioritizedHandler extends BaseHttpHandler implements HttpHandler {
 
-    private final TaskManager manager;
-    private final Gson gson;
-
     public PrioritizedHandler(TaskManager taskManager, Gson gson) {
-        this.manager = taskManager;
-        this.gson = gson;
+        super(taskManager,gson);
     }
 
     // Обработка HTTP-запросов
